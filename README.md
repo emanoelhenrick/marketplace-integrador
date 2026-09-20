@@ -24,6 +24,15 @@ Aplicação web full stack que conecta artesãos de Pernambuco a compradores de 
         <b>Raiele Leite</b>
       </a>
     </td>
+    
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://github.com/RayssaRR">
+        <img src="https://github.com/RayssaRR.png" width="90px" style="border-radius:50%;" alt="Rayssa Santana"/><br />
+        <b>Rayssa Santana</b>
+      </a>
+    </td>
     <td align="center" width="33%">
       <a href="https://github.com/FelipeLV12">
         <img src="https://github.com/FelipeLV12.png" width="90px" style="border-radius:50%;" alt="Felipe Lopes"/><br />
@@ -34,14 +43,6 @@ Aplicação web full stack que conecta artesãos de Pernambuco a compradores de 
       <a href="https://github.com/injuje">
         <img src="https://github.com/injuje.png" width="90px" style="border-radius:50%;" alt="José Leandro"/><br />
         <b>José Leandro</b>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="33%">
-      <a href="https://github.com/RayssaRR">
-        <img src="https://github.com/RayssaRR.png" width="90px" style="border-radius:50%;" alt="Rayssa Santana"/><br />
-        <b>Rayssa Santana</b>
       </a>
     </td>
   </tr>
