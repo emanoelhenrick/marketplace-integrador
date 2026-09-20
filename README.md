@@ -24,7 +24,6 @@ Aplicação web full stack que conecta artesãos de Pernambuco a compradores de 
         <b>Raiele Leite</b>
       </a>
     </td>
-    
   </tr>
   <tr>
     <td align="center" width="33%">
