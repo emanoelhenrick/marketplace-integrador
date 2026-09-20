@@ -45,10 +45,6 @@ Aplicação web full stack que conecta artesãos de Pernambuco a compradores de 
       </a>
     </td>
   </tr>
-  <tr>
-    <td align="center" width="33%"></td>
-    <td align="center" width="33%"></td>
-  </tr>
 </table>
 
 ## Stack
