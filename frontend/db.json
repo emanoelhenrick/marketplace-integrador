@@ -1,0 +1,114 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Casal de Noivos de Barro",
+      "price": 180.0,
+      "stars": 4.8,
+      "category": "Cerâmica & Barro",
+      "artisan": "Mestre Vitalino (Família)",
+      "location": "Alto do Moura / Caruaru",
+      "image": "https://picsum.photos/seed/barro-noivos/400/400",
+      "description": "Modelagem figurativa em argila queimada a lenha, retratando o cotidiano e as tradições do agreste pernambucano."
+    },
+    {
+      "id": 2,
+      "name": "Toalha em Renda Renascença",
+      "price": 450.0,
+      "stars": 5.0,
+      "category": "Rendas & Bordados",
+      "artisan": "Associação de Rendeiras",
+      "location": "Poção / PE",
+      "image": "https://picsum.photos/seed/renda-renascenca/400/400",
+      "description": "Trama milimétrica confeccionada manualmente em almofada de bilro com fios de algodão puro."
+    },
+    {
+      "id": 3,
+      "name": "Matriz de Xilogravura - O Frevo",
+      "price": 220.0,
+      "stars": 4.9,
+      "category": "Xilogravura & Cordel",
+      "artisan": "Mestre J. Borges",
+      "location": "Bezerros / PE",
+      "image": "https://picsum.photos/seed/xilogravura-frevo/400/400",
+      "description": "Impressão original tirada de matriz de umburana entalhada à mão com pigmento preto em papel de gramatura especial."
+    },
+    {
+      "id": 4,
+      "name": "Carranca Protetora em Cedro",
+      "price": 620.0,
+      "stars": 4.7,
+      "category": "Madeira & Entalhe",
+      "artisan": "Mestre Saúba",
+      "location": "Jaboatão dos Guararapes / PE",
+      "image": "https://picsum.photos/seed/carranca-madeira/400/400",
+      "description": "Escultura folclórica entalhada em bloco único de madeira nobre restaurada com acabamento em cera natural."
+    },
+    {
+      "id": 5,
+      "name": "Santo Antônio de Barro Pintado",
+      "price": 140.0,
+      "stars": 4.5,
+      "category": "Cerâmica & Barro",
+      "artisan": "Mestra Ana das Carrancas",
+      "location": "Petrolina / PE",
+      "image": "https://picsum.photos/seed/santo-barro/400/400",
+      "description": "Arte sacra popular moldada à mão com traços marcantes e olhos vazados, marca registrada do São Francisco."
+    },
+    {
+      "id": 6,
+      "name": "Máscara de Papangú de Bezerros",
+      "price": 110.0,
+      "stars": 4.3,
+      "category": "Máscaras & Carnaval",
+      "artisan": "Ateliê Papangú",
+      "location": "Bezerros / PE",
+      "image": "https://picsum.photos/seed/papangu-mask/400/400",
+      "description": "Máscara tradicional de papel machê e tinta acrílica feita para o carnaval do Agreste pernambucano."
+    },
+    {
+      "id": 7,
+      "name": "Colcha em Patchwork & Fuxico",
+      "price": 380.0,
+      "stars": 4.6,
+      "category": "Rendas & Têxtil",
+      "artisan": "Coletivo Rendeiras de Passira",
+      "location": "Passira / PE",
+      "image": "https://picsum.photos/seed/colcha-fuxico/400/400",
+      "description": "Trabalho manual de reaproveitamento de retalhos coloridos unindo centenas de fuxicos em padrões florais."
+    },
+    {
+      "id": 8,
+      "name": "Ex-Voto de Madeira Entalhada",
+      "price": 195.0,
+      "stars": 4.4,
+      "category": "Madeira & Entalhe",
+      "artisan": "Mestre Nena",
+      "location": "Tracunhaém / PE",
+      "image": "https://picsum.photos/seed/ex-voto-madeira/400/400",
+      "description": "Peça devocional esculpida em umburana representando o agradecimento a promessas e fé popular."
+    },
+    {
+      "id": 9,
+      "name": "Vaso Utilitário em Argila Vermelha",
+      "price": 160.0,
+      "stars": 4.2,
+      "category": "Cerâmica & Barro",
+      "artisan": "Mestre Zezinho de Tracunhaém",
+      "location": "Tracunhaém / PE",
+      "image": "https://picsum.photos/seed/vaso-argila/400/400",
+      "description": "Modelado no torno manual e queimado em forno primitivo, mantendo a porosidade e a cor natural da terra."
+    },
+    {
+      "id": 10,
+      "name": "Estandarte em Feltro Maracatu",
+      "price": 540.0,
+      "stars": 4.9,
+      "category": "Têxtil & Carnaval",
+      "artisan": "Mestre Luiz de Olinda",
+      "location": "Olinda / PE",
+      "image": "https://picsum.photos/seed/estandarte-maracatu/400/400",
+      "description": "Estandarte ricamente bordado com lantejoulas, fitas e pedrarias em homenagem às nações de Maracatu Rural."
+    }
+  ]
+}
