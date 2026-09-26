@@ -18,4 +18,18 @@ export const productService = {
     const response = await api.get<Product>(`/products/${id}`);
     return response.data;
   },
+
+  async getByArtisan(artisanId: number): Promise<Product[]> {
+    const response = await api.get<Product[]>("/products", {
+      params: { artisanId },
+    });
+    return response.data;
+  },
+
+  async create(
+    product: Omit<Product, "id" | "artisan">,
+  ): Promise<Product> {
+    const response = await api.post<Product>("/products", product);
+    return response.data;
+  },
 };

@@ -1,13 +1,17 @@
+import { Artisan } from "./artisan";
+
 export interface Product {
   id: number;
   name: string;
-  price: number;
-  category: string;
-  image: string;
   description: string;
-  artisan?: string;
-  location?: string;
+  price: number;
+  image: string;
+  category: string;
+  location: string;
   stars: number;
+
+  artisanId: number;
+  artisan?: Artisan;
 }
 
 export interface CartItem {
