@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 interface CardImageProps {
   numPieces: number;
@@ -15,10 +16,12 @@ export function CardImage(props: CardImageProps) {
         <span className="absolute top-3 right-3 z-10 bg-white text-(--barro) text-xs font-semibold px-3 py-1 rounded-full shadow-md">
           {props.numPieces} peças
         </span>
-        <img
+        <Image
           src={props.imageUrl}
           alt={props.title}
-          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+          fill
+          sizes="(min-width: 1024px) 33vw, 100vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
