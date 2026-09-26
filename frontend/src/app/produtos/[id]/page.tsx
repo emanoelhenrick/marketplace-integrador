@@ -48,8 +48,9 @@ export default function ProductDetailPage({ params }: PageProps) {
         setIsLoading(true);
 
         const allProducts = await productService.getAll();
-        const foundProduct = allProducts.find((p) => p.id === numericId);
-
+        const foundProduct = allProducts.find(
+          (p) => String(p.id) == String(id),
+        );
         if (!isMounted) return;
 
         setProduct(foundProduct || null);
@@ -89,8 +90,6 @@ export default function ProductDetailPage({ params }: PageProps) {
   const handleAddToCart = () => {
     if (!product) return;
 
-    // addItem só aceita o produto (adiciona 1 unidade por chamada),
-    // então repetimos a chamada de acordo com a quantidade selecionada.
     for (let i = 0; i < quantity; i++) {
       addItem(product);
     }
@@ -184,8 +183,7 @@ export default function ProductDetailPage({ params }: PageProps) {
                 }).format(product.price)}
               </p>
               <p className="text-xs text-stone-500 mt-1">
-                Peça única · sujeita a pequenas variações naturais do
-                artesanato
+                Peça única · sujeita a pequenas variações naturais do artesanato
               </p>
             </div>
 
@@ -218,7 +216,9 @@ export default function ProductDetailPage({ params }: PageProps) {
                 className="flex-1 py-6 sm:py-3 font-semibold cursor-pointer bg-(--barro) hover:scale-[1.02] transition-transform duration-100 flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-4 h-4" />
-                {justAdded ? "Adicionado ao carrinho!" : "Adicionar ao Carrinho"}
+                {justAdded
+                  ? "Adicionado ao carrinho!"
+                  : "Adicionar ao Carrinho"}
               </Button>
             </div>
 

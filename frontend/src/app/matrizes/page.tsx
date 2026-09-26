@@ -120,7 +120,6 @@ export default function MatrizesPage() {
 
   return (
     <main className="pb-14 sm:pb-20">
-      {/* Hero */}
       <section className="bg-(--barro-claro) p-6 sm:p-10 lg:p-15 rounded-md border mx-4 sm:mx-10 lg:mx-20 mt-6 sm:mt-8 lg:mt-10">
         <p className="hidden sm:inline font-bold bg-(--mangue)/20 py-2 px-4 sm:px-6 border border-(--mangue) rounded-3xl text-(--mangue) text-xs">
           Linguagens Populares de Pernambuco
@@ -135,7 +134,7 @@ export default function MatrizesPage() {
         </p>
 
         <div className="flex flex-wrap items-center gap-4 sm:gap-5 mt-8 sm:mt-10">
-          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3 min-w-[140px]">
+          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3]">
             <p className="text-2xl sm:text-3xl font-bold text-carvao">
               {isLoading ? "…" : MATRIZES.length}
             </p>
@@ -143,7 +142,7 @@ export default function MatrizesPage() {
               Matrizes populares
             </p>
           </div>
-          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3 min-w-[140px]">
+          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3">
             <p className="text-2xl sm:text-3xl font-bold text-carvao">
               {isLoading ? "…" : artisans.length}
             </p>
@@ -185,7 +184,6 @@ export default function MatrizesPage() {
                     isReversed ? "lg:flex-row-reverse" : "lg:flex-row"
                   } gap-8 lg:gap-14 items-start`}
                 >
-                  {/* Imagem */}
                   <div className="w-full lg:w-[45%] shrink-0">
                     <div className="relative rounded-lg overflow-hidden border border-stone-200 aspect-4/3">
                       <img
@@ -196,7 +194,6 @@ export default function MatrizesPage() {
                     </div>
                   </div>
 
-                  {/* Conteúdo */}
                   <div className="w-full lg:w-[55%] space-y-5">
                     <div>
                       <p className="text-xs font-bold text-(--barro) uppercase tracking-wider">
@@ -271,7 +268,6 @@ export default function MatrizesPage() {
                   </div>
                 </div>
 
-                {/* Produtos da matriz */}
                 {matriz.products.length > 0 && (
                   <div className="mt-8 sm:mt-10">
                     <div className="flex items-center justify-between mb-4">

@@ -62,16 +62,11 @@ export default function Home() {
           <CardHomeInfos value="100%" label="Origem Rastreável" />
           <CardHomeInfos value="+450" label="Mestres & Ateliês" />
           <CardHomeInfos value="R$ 2.4" label="Repasse aos Mestres" />
-        <div className="flex items-center gap-5 mt-10">
-          <CardHomeInfos value="100%" label="Origem Rastreável" />
-          <CardHomeInfos value="+450" label="Mestres & Ateliês" />
-          <CardHomeInfos value="R$ 2.4" label="Repasse aos Mestres" />
         </div>
       </section>
 
       <section className="px-20">
-      <section className="px-20">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-end">
           <div className="w-[65%]">
             <p className="text-xs font-bold text-(--barro) uppercase">
               LINGUAGENS POPULARES
@@ -79,45 +74,68 @@ export default function Home() {
             <h2 className="block text-4xl font-bold">
               Três matrizes da alma pernambucana
             </h2>
+            <p className="text-stone-600 mt-2">
+              Saberes seculares lapidados pelo barro dos rios, a paciência dos
+              teares manuais e a firmeza da goiva no cedro.
+            </p>
           </div>
-          <p className="w-[35%] text-stone-600">
-            Saberes seculares lapidados pelo barro dos rios, a paciência dos
-            teares manuais e a firmeza da goiva no cedro.
-          </p>
+
+          <Link
+            href="/matrizes"
+            className="flex items-center gap-2 font-bold text-carvao hover:text-(--barro) transition-colors pb-2"
+          >
+            Explorar todas as matrizes <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
 
         <div className="flex gap-10 mt-15">
-          <CardImage
-            numPieces={142}
-            title={"Cerâmica & Barro Queimado"}
-            subtitle={"Mestres de Caruaru & Tracunhaém"}
-            description={
-              "Esculturas figurativas, vasos de queima a lenha e utilitários que guardam a temperatura e o aroma da terra molhada."
-            }
-            imageUrl={"/assets/barro.jpg"}
-          />
-          <CardImage
-            numPieces={88}
-            title={"Tecidos, Rendas & Bordados"}
-            subtitle={"Rendeiras de Passira & Poção"}
-            description={
-              "A precisão milimétrica da Renda Renascença em almofada e o bordado manual que sustentam gerações de mulheres do Agreste."
-            }
-            imageUrl={"/assets/tecido.jpg"}
-          />
-          <CardImage
-            numPieces={64}
-            title={"Madeira & Xilogravura Popular"}
-            subtitle={"Entalhadores de Bezerros & Recife"}
-            description={
-              "Matrizes originais entalhadas à mão, santos barrocos populares em cedro e a lírica gráfica do cordel pernambucano."
-            }
-            imageUrl={"/assets/xilogravura.jpg"}
-          />
+          <Link
+            href="/matrizes#ceramica-barro"
+            className="flex-1 hover:scale-[1.02] transition-transform duration-300"
+          >
+            <CardImage
+              numPieces={142}
+              title={"Cerâmica & Barro Queimado"}
+              subtitle={"Mestres de Caruaru & Tracunhaém"}
+              description={
+                "Esculturas figurativas, vasos de queima a lenha e utilitários que guardam a temperatura e o aroma da terra molhada."
+              }
+              imageUrl={"/assets/barro.jpg"}
+            />
+          </Link>
+
+          <Link
+            href="/matrizes#tecidos-rendas-bordados"
+            className="flex-1 hover:scale-[1.02] transition-transform duration-300"
+          >
+            <CardImage
+              numPieces={88}
+              title={"Tecidos, Rendas & Bordados"}
+              subtitle={"Rendeiras de Passira & Poção"}
+              description={
+                "A precisão milimétrica da Renda Renascença em almofada e o bordado manual que sustentam gerações de mulheres do Agreste."
+              }
+              imageUrl={"/assets/tecido.jpg"}
+            />
+          </Link>
+
+          <Link
+            href="/matrizes#madeira-xilogravura"
+            className="flex-1 hover:scale-[1.02] transition-transform duration-300"
+          >
+            <CardImage
+              numPieces={64}
+              title={"Madeira & Xilogravura Popular"}
+              subtitle={"Entalhadores de Bezerros & Recife"}
+              description={
+                "Matrizes originais entalhadas à mão, santos barrocos populares em cedro e a lírica gráfica do cordel pernambucano."
+              }
+              imageUrl={"/assets/xilogravura.jpg"}
+            />
+          </Link>
         </div>
       </section>
 
-      {/* Terceira seção com os 3 artesãos e link para a listagem */}
       <section className="px-20 py-15 bg-white space-y-8">
         <div className="flex justify-between items-end">
           <div>
