@@ -221,14 +221,10 @@ Em fase de definição: ficha, backlog e arquitetura especificados. Próximas en
 
 A aplicação web full-stack abrange o ciclo completo de exposição, venda e gestão do artesanato, dividida em fluxos de experiência adaptados para cada perfil de usuário:
 
----
-
 ### 1. Fluxo do Artesão (Gestão e Catálogo)
 * **Cadastro e Perfil:** Criação de conta e gerenciamento do perfil do artesão com dados institucionais, biografia e localização.
 * **Gestão de Produtos:** Cadastro detalhado das peças, incluindo adição de imagens, preço e a técnica artesanal utilizada.
 * **Painel de Controle:** Visualização e acompanhamento dos pedidos recebidos e atualização do status dos itens disponíveis no catálogo.
-
----
 
 ### 2. Fluxo do Comprador (Navegação e Compra)
 * **Vitrine e Busca:** Acesso à página principal de produtos com mecanismos de busca e filtros por categorias, técnicas e regiões.
