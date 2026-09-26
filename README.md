@@ -216,3 +216,22 @@ manoa/
 ## Estado atual
 
 Em fase de definição: ficha, backlog e arquitetura especificados. Próximas entregas: autenticação, catálogo, pedidos e recomendação, começando pelas histórias Must Have.
+
+## 7. Fluxos do Sistema Implementados
+
+A aplicação web full-stack abrange o ciclo completo de exposição, venda e gestão do artesanato, dividida em fluxos de experiência adaptados para cada perfil de usuário:
+
+---
+
+### 7.1. Fluxo do Artesão (Gestão e Catálogo)
+* **Cadastro e Perfil:** Criação de conta e gerenciamento do perfil do artesão com dados institucionais, biografia e localização.
+* **Gestão de Produtos:** Cadastro detalhado das peças, incluindo adição de imagens, preço e a técnica artesanal utilizada.
+* **Painel de Controle:** Visualização e acompanhamento dos pedidos recebidos e atualização do status dos itens disponíveis no catálogo.
+
+---
+
+### 7.2. Fluxo do Comprador (Navegação e Compra)
+* **Vitrine e Busca:** Acesso à página principal de produtos com mecanismos de busca e filtros por categorias, técnicas e regiões.
+* **Perfil do Artesão e Detalhes:** Navegação dedicada para conhecer a história do artesão e ver o catálogo completo do produtor.
+* **Carrinho de Compras:** Adição, alteração de quantidades e remoção de produtos em tempo real.
+* **Checkout:** Finalização da compra.
