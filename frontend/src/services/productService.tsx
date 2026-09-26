@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { api } from "./api";
 import { Product } from "@/types/product";
 
@@ -34,26 +33,3 @@ export const productService = {
     return response.data;
   },
 };
-=======
-import { api } from "./api";
-import { Product } from "@/types/product";
-
-export const productService = {
-  async getAll(): Promise<Product[]> {
-    const response = await api.get<Product[]>("/products");
-    return response.data;
-  },
-
-  async getByCategory(category: string): Promise<Product[]> {
-    const response = await api.get<Product[]>("/products", {
-      params: { category },
-    });
-    return response.data;
-  },
-
-  async getById(id: number): Promise<Product> {
-    const response = await api.get<Product>(`/products/${id}`);
-    return response.data;
-  },
-};
->>>>>>> b183190bf7cb7c6c3dd7408c3d08cf427373cc17

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -331,4 +330,4 @@ export default function CartPage() {
     </main>
   );
 }
->>>>>>> b183190bf7cb7c6c3dd7408c3d08cf427373cc17
+

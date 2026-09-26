@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
@@ -390,4 +389,4 @@ export default function ProductsPage() {
     </main>
   );
 }
->>>>>>> b183190bf7cb7c6c3dd7408c3d08cf427373cc17
+
