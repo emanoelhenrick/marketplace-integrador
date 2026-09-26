@@ -9,3 +9,8 @@ export interface Product {
   location?: string;
   stars: number;
 }
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
