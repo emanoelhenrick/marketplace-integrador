@@ -154,6 +154,35 @@ Testes: `npm test` em `backend/` e `frontend/`.
 
 Variáveis principais do `.env`: `DATABASE_URL`, `REDIS_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `CORS_ORIGIN`, `PORT` e `NEXT_PUBLIC_API_URL`. O `.env` nunca vai para o Git.
 
+## Integração futura com o backend
+
+Hoje o frontend consome dados de uma **fake API** (`json-server` sobre `backend/db.json` local ao repositório do frontend), acessada por uma instância Axios única em `src/services/api.tsx` (`baseURL: http://localhost:3001`). Os serviços (`productService`, `artisansService`, `orderService`, `authService`) chamam rotas REST-like geradas automaticamente pelo `json-server` (`/products`, `/users`, `/orders`). Essa etapa existe apenas para permitir o desenvolvimento das telas antes do backend real estar pronto.
+
+Quando o backend em Node.js + Express (ver seção **Stack**) estiver disponível, a troca será feita **sem alterar a assinatura dos serviços consumidos pelos componentes**, apenas a camada de infraestrutura de acesso HTTP:
+
+1. **Trocar o `baseURL`**: `src/services/api.tsx` passa a apontar para a variável de ambiente `NEXT_PUBLIC_API_URL` (ex.: `http://localhost:4000/api`) em vez do endereço fixo do `json-server`.
+2. **Remover a fake API**: `db.json`, a dependência `json-server` e os scripts `api` e `dev:full` do `package.json` são removidos assim que o backend passa a rodar via `docker compose` (conforme já documentado em **Executando localmente**).
+3. **Autenticação real**: `authService.login`, que hoje busca o usuário por e-mail e compara a senha no cliente, passa a chamar `POST /api/auth/login` no Express. O backend valida a senha (hash) e devolve os tokens (access + refresh) em cookies `httpOnly`, conforme a Chain of Responsibility de middlewares (`authenticate → authorize → validate`). O `authStore` deixa de ser a única fonte de verdade da sessão e passa a hidratar o usuário a partir de um `GET /api/auth/me`, além de existir um `authService.logout` que invalida o refresh token no servidor.
+4. **Endpoints equivalentes**: os métodos dos serviços mantêm o mesmo nome e contrato de retorno, apenas trocando a rota chamada:
+
+   | Serviço | Rota hoje (fake API) | Rota futura (Express) |
+   | --- | --- | --- |
+   | `productService.getAll` | `GET /products` | `GET /api/products` |
+   | `productService.getByCategory` | `GET /products?category=` | `GET /api/products?category=` |
+   | `productService.getByArtisan` | `GET /products?artisanId=` | `GET /api/products?artisanId=` |
+   | `productService.create` | `POST /products` | `POST /api/products` (autenticado, painel do artesão) |
+   | `artesiansService.getAll` | `GET /users?role=artisan` | `GET /api/artisans` |
+   | `artesiansService.getById` | `GET /users/:id` | `GET /api/artisans/:id` |
+   | `authService.login` | `GET /users?email=` (comparação no cliente) | `POST /api/auth/login` (validação no servidor) |
+   | `orderService.getAll` / `getById` / `getByUserId` | `GET /orders`, `/orders/:id`, `/orders?userId=` | `GET /api/orders`, `/api/orders/:id`, `/api/orders?userId=` |
+   | `orderService.create` | `POST /orders` | `POST /api/orders` (transacional, dispara o `DomainEventBus`) |
+   | `orderService.updateStatus` | `PATCH /orders/:id` | `PATCH /api/orders/:id/status` (respeita as transições do `OrderState`) |
+
+5. **Erros e sessão expirada**: a instância Axios ganha um interceptor de resposta para tratar `401` acionando o fluxo de refresh token (rotação) antes de repetir a requisição original, hoje inexistente por não haver JWT na fake API.
+6. **Tipos**: `types/user.ts`, `types/product.ts`, `types/order.ts` e `types/artisan.ts` são revisados para refletir exatamente o formato retornado pelo Express/Prisma (ex.: remoção do campo `password` da resposta, IDs no formato definitivo), evitando que o frontend dependa de um shape específico do `json-server`.
+
+Enquanto o backend não está pronto, a fake API continua sendo a única dependência de dados do frontend; a migração é incremental, serviço por serviço, sem exigir mudanças nas páginas ou componentes que os consomem.
+
 ## Estrutura do repositório
 
 Organização alvo, a ser construída conforme os módulos forem implementados.
@@ -187,3 +216,18 @@ manoa/
 ## Estado atual
 
 Em fase de definição: ficha, backlog e arquitetura especificados. Próximas entregas: autenticação, catálogo, pedidos e recomendação, começando pelas histórias Must Have.
+
+## Fluxos do Sistema Implementados
+
+A aplicação web full-stack abrange o ciclo completo de exposição, venda e gestão do artesanato, dividida em fluxos de experiência adaptados para cada perfil de usuário:
+
+### 1. Fluxo do Artesão (Gestão e Catálogo)
+* **Cadastro e Perfil:** Criação de conta e gerenciamento do perfil do artesão com dados institucionais, biografia e localização.
+* **Gestão de Produtos:** Cadastro detalhado das peças, incluindo adição de imagens, preço e a técnica artesanal utilizada.
+* **Painel de Controle:** Visualização e acompanhamento dos pedidos recebidos e atualização do status dos itens disponíveis no catálogo.
+
+### 2. Fluxo do Comprador (Navegação e Compra)
+* **Vitrine e Busca:** Acesso à página principal de produtos com mecanismos de busca e filtros por categorias, técnicas e regiões.
+* **Perfil do Artesão e Detalhes:** Navegação dedicada para conhecer a história do artesão e ver o catálogo completo do produtor.
+* **Carrinho de Compras:** Adição, alteração de quantidades e remoção de produtos em tempo real.
+* **Checkout:** Finalização da compra.

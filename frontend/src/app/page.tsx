@@ -62,9 +62,14 @@ export default function Home() {
           <CardHomeInfos value="100%" label="Origem Rastreável" />
           <CardHomeInfos value="+450" label="Mestres & Ateliês" />
           <CardHomeInfos value="R$ 2.4" label="Repasse aos Mestres" />
+        <div className="flex items-center gap-5 mt-10">
+          <CardHomeInfos value="100%" label="Origem Rastreável" />
+          <CardHomeInfos value="+450" label="Mestres & Ateliês" />
+          <CardHomeInfos value="R$ 2.4" label="Repasse aos Mestres" />
         </div>
       </section>
 
+      <section className="px-20">
       <section className="px-20">
         <div className="flex justify-between">
           <div className="w-[65%]">
