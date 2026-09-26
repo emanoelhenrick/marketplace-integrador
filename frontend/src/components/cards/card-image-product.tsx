@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Product } from "@/types/product";
+import { useCartStore } from "@/store/cardStore";
 
 export interface CardProductProps {
   product: Product;
@@ -19,8 +20,10 @@ export function CardImageProduct({ product }: CardProductProps) {
     currency: "BRL",
   }).format(product.price);
 
+  const addItem = useCartStore((state) => state.addItem);
+
   return (
-    <Card className="mx-auto w-full max-w-sm pt-0 bg-(--barro-claro) cursor-pointer hover:scale-105 transition-transform">
+    <Card className="mx-auto w-full max-w-sm pt-0 bg-(--barro-claro) cursor-pointer hover:scale-103 transition-transform">
       <div className="relative aspect-video w-full overflow-hidden">
         <span className="absolute top-3 left-3 z-10 bg-white text-(--barro) text-xs font-semibold px-3 py-1 rounded-full shadow-md">
           {product.category}
@@ -32,11 +35,7 @@ export function CardImageProduct({ product }: CardProductProps) {
         <div className="absolute top-3 right-3 z-10 bg-white p-2 rounded-full">
           <Heart></Heart>
         </div>
-        <img
-          src={product.image}
-          alt={product.name}
-          className="object-cover transition-transform duration-300 hover:scale-105"
-        />
+        <img src={product.image} alt={product.name} className="object-cover" />
       </div>
       <CardHeader>
         <div className="flex justify-between h-7">
@@ -46,9 +45,13 @@ export function CardImageProduct({ product }: CardProductProps) {
             <p className="text-(--sol) font-bold">{product.stars}</p>
           </div>
         </div>
-        <CardTitle className="font-bold text-2xl h-17">{product.name}</CardTitle>
+        <CardTitle className="font-bold text-2xl h-17">
+          {product.name}
+        </CardTitle>
 
-        <CardDescription className="h-15">{product.description}</CardDescription>
+        <CardDescription className="h-15">
+          {product.description}
+        </CardDescription>
 
         <hr className="my-2"></hr>
         <div className="flex justify-between items-center">
@@ -58,7 +61,11 @@ export function CardImageProduct({ product }: CardProductProps) {
               {formattedPrice}
             </p>
           </div>
-          <Button className="py-2 px-8 cursor-pointer hover:scale-105 transition-transform ">
+          <Button
+            className="py-2 px-8 cursor-pointer"
+            size="sm"
+            onClick={() => addItem(product)}
+          >
             <ShoppingCartPlus></ShoppingCartPlus> Comprar
           </Button>
         </div>

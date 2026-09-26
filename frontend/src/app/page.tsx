@@ -8,42 +8,40 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="flex flex-col gap-50">
-      <section className="bg-(--barro-claro) p-15 rounded-md border">
-        <div className="w-full">
-          <p className="inline font-bold bg-(--mangue)/20 py-2 px-6 border border-(--mangue) rounded-3xl text-(--mangue) text-xs">
-            Arte Popular & Economia Criativa de Pernambuco
-          </p>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-carvao my-7">
-            Onde cada peça carrega o sopro, aterra e a alma de quem fez.
-          </h2>
-          <p className="font-thin">
-            Conectamos os mestres do barro, dos teares e da xilogravura de
-            Pernambuco aos lares de todo o Brasil. Sem intermediários, com
-            remuneração justa e certificação de origem
-          </p>
-          <div className="flex gap-5 mt-5 items-center">
-            <Button className="py-4 px-6 font-semibold cursor-pointer bg-(--barro) hover:scale-105 transition-transform duration-100 ">
-              <Link href="/products" className="flex items-center gap-2">
-                Explorar o Acervo Manoa <ArrowRight></ArrowRight>
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              className="py-4 px-6 font-semibold cursor-pointer text-(--mare)"
-            >
-              Conhecer o Selo de Autenticidade
-            </Button>
-          </div>
+      <section className="bg-(--barro-claro) p-15 rounded-md border mx-20">
+        <p className="inline font-bold bg-(--mangue)/20 py-2 px-6 border border-(--mangue) rounded-3xl text-(--mangue) text-xs">
+          Arte Popular & Economia Criativa de Pernambuco
+        </p>
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-carvao my-7">
+          Onde cada peça carrega o sopro, aterra e a alma de quem fez.
+        </h2>
+        <p className="font-thin">
+          Conectamos os mestres do barro, dos teares e da xilogravura de
+          Pernambuco aos lares de todo o Brasil. Sem intermediários, com
+          remuneração justa e certificação de origem
+        </p>
+        <div className="flex gap-5 mt-5 items-center">
+          <Button className="py-4 px-6 font-semibold cursor-pointer bg-(--barro) hover:scale-105 transition-transform duration-100 ">
+            <Link href="/produtos" className="flex items-center gap-2">
+              Explorar o Acervo Manoa <ArrowRight></ArrowRight>
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="py-4 px-6 font-semibold cursor-pointer text-(--mare)"
+          >
+            Conhecer o Selo de Autenticidade
+          </Button>
+        </div>
 
-          <div className="flex items-center gap-5 mt-10">
-            <CardHomeInfos value="100%" label="Origem Rastreável" />
-            <CardHomeInfos value="+450" label="Mestres & Ateliês" />
-            <CardHomeInfos value="R$ 2.4" label="Repasse aos Mestres" />
-          </div>
+        <div className="flex items-center gap-5 mt-10">
+          <CardHomeInfos value="100%" label="Origem Rastreável" />
+          <CardHomeInfos value="+450" label="Mestres & Ateliês" />
+          <CardHomeInfos value="R$ 2.4" label="Repasse aos Mestres" />
         </div>
       </section>
 
-      <section>
+      <section className="px-20">
         <div className="flex justify-between">
           <div className="w-[65%]">
             <p>LINGUAGENS POPULARES</p>
@@ -88,7 +86,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex p-10 bg-white px-15">
+      <section className="flex py-25 bg-white px-20">
         <CardArtisan></CardArtisan>
       </section>
     </main>

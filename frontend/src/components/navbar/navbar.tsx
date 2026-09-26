@@ -1,13 +1,21 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { Button } from "@base-ui/react";
 import { CircleUserRound, Moon, ShoppingBag } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useCartStore } from "@/store/cardStore";
+import { cn } from "cn";
+
 export default function NavBar() {
-  const stylesHoverLink = "relative text-carvao/80 hover:text-(--urucum) transition-colors duration-200 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-(--urucum) hover:after:w-full after:transition-all after:duration-300";
+  const stylesHoverLink =
+    "relative text-carvao/80 hover:text-(--urucum) transition-colors duration-200 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-(--urucum) hover:after:w-full after:transition-all after:duration-300";
+  const totalItems = useCartStore((state) => state.totalItems());
 
   return (
-    <nav className="py-5 px-20 border-b flex items-center justify-between">
+    <header className="py-5 px-20 border-b flex items-center justify-between">
       <div className="flex items-center gap-6">
         <Link href="/">
           <img
@@ -28,30 +36,31 @@ export default function NavBar() {
 
       <div className="flex items-center gap-6">
         <nav className="flex items-center gap-6 text-sm font-medium">
-          <Link
-            href="/products"
-            className={stylesHoverLink}
-          >
+          <Link href="/produtos" className={stylesHoverLink}>
             Produtos
           </Link>
-          <Link
-            href="/mestres"
-            className={stylesHoverLink}
-          >
+          <Link href="/mestres" className={stylesHoverLink}>
             Mestres e Histórias
           </Link>
-          <Link
-            href="/polos"
-            className={stylesHoverLink}
-          >
+          <Link href="/polos" className={stylesHoverLink}>
             Polos Criativos
           </Link>
         </nav>
-
-        <Button className="bg-(--barro-claro) text-carvao font-medium px-10 py-2 flex items-center gap-2 rounded-md cursor-pointer hover:bg-(--sol) hover:scale-105 active:scale-95 transition-all duration-200">
+        <Link
+          href="/carrinho"
+          className={cn(
+            buttonVariants(),
+            "group flex items-center gap-2 bg-(--barro-claro) text-carvao font-medium py-5 px-14 rounded-md cursor-pointer hover:bg-(--sol) hover:scale-105 active:scale-95 transition-all duration-200",
+          )}
+        >
           <ShoppingBag className="w-5 h-5" />
           <span>Carrinho</span>
-        </Button>
+          {totalItems > 0 && (
+            <Badge className="px-2 py-0.5 transition-colors duration-200 group-hover:bg-white group-hover:text-(--sol)">
+              {totalItems}
+            </Badge>
+          )}
+        </Link>
 
         <Link
           href="/perfil"
@@ -61,6 +70,6 @@ export default function NavBar() {
           <CircleUserRound className="w-7 h-7 text-(--urucum)" />
         </Link>
       </div>
-    </nav>
+    </header>
   );
 }
