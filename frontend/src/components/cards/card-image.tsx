@@ -11,9 +11,9 @@ interface CardImageProps {
 
 export function CardImage(props: CardImageProps) {
   return (
-    <div className="group relative mx-auto w-full bg-transparent rounded-2xl overflow-hidden cursor-pointer hover:bg-(--barro-claro)">
+    <div className="group relative mx-auto w-full bg-transparent rounded-2xl overflow-hidden cursor-pointer hover:bg-brand-soft">
       <div className="relative h-72 w-full overflow-hidden">
-        <span className="absolute top-3 right-3 z-10 bg-white text-(--barro) text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+        <span className="absolute top-3 right-3 z-10 bg-card text-brand text-xs font-semibold px-3 py-1 rounded-full shadow-md">
           {props.numPieces} peças
         </span>
         <Image
@@ -27,14 +27,14 @@ export function CardImage(props: CardImageProps) {
 
       <div className="flex flex-col gap-1 p-7">
         <div className="flex justify-between">
-          <p className="text-(--urucum)">{props.subtitle}</p>
+          <p className="text-brand-strong">{props.subtitle}</p>
         </div>
-        <h3 className="font-semibold text-2xl transition-colors duration-200 group-hover:text-(--urucum)">
+        <h3 className="font-semibold text-2xl transition-colors duration-200 group-hover:text-brand-strong">
           {props.title}
         </h3>
 
-        <p className="text-sm font-thin">{props.description}</p>
-        <p className="flex items-center gap-1.5 text-(--urucum) font-light text-xs">
+        <p className="text-sm font-light">{props.description}</p>
+        <p className="flex items-center gap-1.5 text-brand-strong font-light text-xs">
           Explorar Matriz{" "}
           <ArrowRight className="w-4 transition-transform duration-200 group-hover:translate-x-1" />
         </p>

@@ -3,13 +3,19 @@ export interface OrderItem {
   artisanId: number;
   quantity: number;
   unitPrice: number;
+  packed?: boolean;
 }
 
-export type OrderStatus = "pending" | "paid" | "shipped" | "delivered" | "cancelled";
+export type OrderStatus =
+  | "pending"
+  | "paid"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export interface Order {
-  id: number;
-  userId: number;
+  id: number | string;
+  userId: number | string;
   customerName: string;
   customerEmail: string;
   status: OrderStatus;

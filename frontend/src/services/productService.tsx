@@ -14,12 +14,12 @@ export const productService = {
     return response.data;
   },
 
-  async getById(id: number): Promise<Product> {
+  async getById(id: number | string): Promise<Product> {
     const response = await api.get<Product>(`/products/${id}`);
     return response.data;
   },
 
-  async getByArtisan(artisanId: number): Promise<Product[]> {
+  async getByArtisan(artisanId: number | string): Promise<Product[]> {
     const response = await api.get<Product[]>("/products", {
       params: { artisanId },
     });

@@ -168,6 +168,15 @@
       "region": "Sertão",
       "totalWorks": 40,
       "password": "123456"
+    },
+    {
+      "id": "900",
+      "name": "Administração Manoa",
+      "email": "admin@manoa.com.br",
+      "role": "admin",
+      "phone": "(81) 3000-0000",
+      "createdAt": "2025-09-01T08:00:00Z",
+      "password": "123456"
     }
   ],
   "products": [
@@ -373,7 +382,8 @@
           "productId": 201,
           "artisanId": 101,
           "quantity": 1,
-          "unitPrice": 180
+          "unitPrice": 180,
+          "packed": true
         },
         {
           "productId": 207,

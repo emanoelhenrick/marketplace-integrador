@@ -15,26 +15,30 @@ type RegionStyle = {
 
 const REGION_STYLES: Record<string, RegionStyle> = {
   Agreste: {
-    badge: "bg-amber-50 text-amber-700 border-amber-200",
+    badge:
+      "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/40",
     dot: "bg-amber-500",
   },
   Metropolitana: {
-    badge: "bg-sky-50 text-sky-700 border-sky-200",
+    badge:
+      "bg-sky-50 text-sky-800 border-sky-200 dark:bg-sky-500/15 dark:text-sky-300 dark:border-sky-500/40",
     dot: "bg-sky-500",
   },
   "Zona da Mata": {
-    badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    badge:
+      "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/40",
     dot: "bg-emerald-500",
   },
   Sertão: {
-    badge: "bg-orange-50 text-orange-700 border-orange-200",
+    badge:
+      "bg-orange-50 text-orange-800 border-orange-200 dark:bg-orange-500/15 dark:text-orange-300 dark:border-orange-500/40",
     dot: "bg-orange-500",
   },
 };
 
 const DEFAULT_REGION_STYLE: RegionStyle = {
-  badge: "bg-stone-50 text-stone-700 border-stone-200",
-  dot: "bg-stone-500",
+  badge: "bg-muted text-muted-foreground border-border",
+  dot: "bg-muted0",
 };
 
 interface PoloGroup {
@@ -106,61 +110,56 @@ export default function PolosPage() {
       .sort((a, b) => b.artisans.length - a.artisans.length);
   }, [artisans]);
 
-  const totalRegions = new Set(polos.map((p) => p.region).filter(Boolean))
-    .size;
+  const totalRegions = new Set(polos.map((p) => p.region).filter(Boolean)).size;
 
   return (
     <main className="space-y-10 sm:space-y-14">
-      {/* Hero */}
-      <section className="bg-(--barro-claro) p-6 sm:p-10 lg:p-15 rounded-md border mx-4 sm:mx-10 lg:mx-20 mt-6 sm:mt-8 lg:mt-10">
-        <p className="hidden sm:inline font-bold bg-(--mangue)/20 py-2 px-4 sm:px-6 border border-(--mangue) rounded-3xl text-(--mangue) text-xs ">
+      <section className="bg-brand-soft p-6 sm:p-10 lg:p-15 rounded-md border mx-4 sm:mx-10 lg:mx-20 mt-6 sm:mt-8 lg:mt-10">
+        <p className="hidden sm:inline font-bold bg-forest/20 py-2 px-4 sm:px-6 border border-forest/60 rounded-3xl text-forest text-xs ">
           Territórios & Economia Criativa de Pernambuco
         </p>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-carvao my-5 sm:my-7">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground my-5 sm:my-7">
           Polos Criativos: onde cada território guarda uma tradição viva.
         </h1>
-        <p className="font-thin text-sm sm:text-base max-w-3xl">
-          Do Agreste ao Sertão, mapeamos as comunidades onde mestres e
-          mestras concentram séculos de saber popular. Cada polo é um
-          convite para conhecer a origem exata de cada peça.
+        <p className="font-light text-sm sm:text-base max-w-3xl">
+          Do Agreste ao Sertão, mapeamos as comunidades onde mestres e mestras
+          concentram séculos de saber popular. Cada polo é um convite para
+          conhecer a origem exata de cada peça.
         </p>
 
         <div className="flex flex-wrap items-center gap-4 sm:gap-5 mt-8 sm:mt-10">
-          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3 min-w-[140px]">
-            <p className="text-2xl sm:text-3xl font-bold text-carvao">
+          <div className="bg-card/70 border border-brand/20 rounded-md px-5 py-3 min-w-35">
+            <p className="text-2xl sm:text-3xl font-bold text-foreground">
               {isLoading ? "…" : polos.length}
             </p>
-            <p className="text-xs text-stone-600 font-medium">
-              Polos mapeados
-            </p>
+            <p className="text-xs text-muted-foreground font-medium">Polos mapeados</p>
           </div>
-          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3 min-w-[140px]">
-            <p className="text-2xl sm:text-3xl font-bold text-carvao">
+          <div className="bg-card/70 border border-brand/20 rounded-md px-5 py-3 min-w-35">
+            <p className="text-2xl sm:text-3xl font-bold text-foreground">
               {isLoading ? "…" : artisans.length}
             </p>
-            <p className="text-xs text-stone-600 font-medium">
+            <p className="text-xs text-muted-foreground font-medium">
               Mestres & Mestras
             </p>
           </div>
-          <div className="bg-white/70 border border-(--barro)/20 rounded-md px-5 py-3 min-w-[140px]">
-            <p className="text-2xl sm:text-3xl font-bold text-carvao">
+          <div className="bg-card/70 border border-brand/20 rounded-md px-5 py-3 min-w-35">
+            <p className="text-2xl sm:text-3xl font-bold text-foreground">
               {isLoading ? "…" : totalRegions}
             </p>
-            <p className="text-xs text-stone-600 font-medium">
+            <p className="text-xs text-muted-foreground font-medium">
               Regiões de Pernambuco
             </p>
           </div>
         </div>
       </section>
 
-      {/* Lista de polos */}
       <section className="px-4 sm:px-8 lg:px-20">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 sm:gap-0 mb-6 sm:mb-10">
           <div>
-            <p className="text-xs font-bold text-(--barro) uppercase tracking-wider">
+            <p className="text-xs font-bold text-brand uppercase tracking-wider">
               Mapa da Cultura Popular
             </p>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-carvao">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
               Conheça cada território criativo
             </h2>
           </div>
@@ -168,7 +167,7 @@ export default function PolosPage() {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
-            <Loader2 className="w-8 h-8 text-(--barro) animate-spin" />
+            <Loader2 className="w-8 h-8 text-brand animate-spin" />
           </div>
         ) : polos.length === 0 ? (
           <div className="p-10 text-center text-muted-foreground">
@@ -185,7 +184,7 @@ export default function PolosPage() {
               return (
                 <div
                   key={polo.name}
-                  className="bg-white border border-stone-200 rounded-lg p-5 sm:p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-card border border-border rounded-lg p-5 sm:p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-2">
@@ -197,18 +196,18 @@ export default function PolosPage() {
                         />
                         {polo.region || "Pernambuco"}
                       </span>
-                      <span className="flex items-center gap-1 text-xs font-semibold text-stone-500 shrink-0">
+                      <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground shrink-0">
                         <Users className="w-3.5 h-3.5" />
                         {polo.artisans.length}
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-carvao leading-snug">
+                      <h3 className="text-lg sm:text-xl font-bold text-foreground leading-snug">
                         {polo.name}
                       </h3>
-                      <p className="text-xs text-stone-500 flex items-center gap-1 mt-1">
-                        <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                      <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                        <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                         {polo.representative.location || "Pernambuco"}
                       </p>
                     </div>
@@ -217,35 +216,35 @@ export default function PolosPage() {
                       {polo.crafts.map((craft) => (
                         <span
                           key={craft}
-                          className="text-[11px] font-medium text-(--barro) bg-(--barro-claro) border border-(--barro)/20 rounded-full px-2.5 py-1"
+                          className="text-[11px] font-medium text-brand bg-brand-soft border border-brand/20 rounded-full px-2.5 py-1"
                         >
                           {craft}
                         </span>
                       ))}
                     </div>
 
-                    <p className="text-xs sm:text-sm text-stone-600 italic leading-relaxed line-clamp-3">
+                    <p className="text-xs sm:text-sm text-muted-foreground italic leading-relaxed line-clamp-3">
                       &ldquo;{polo.representative.quote}&rdquo;
-                      <span className="not-italic text-stone-400">
+                      <span className="not-italic text-muted-foreground">
                         {" "}
                         — {polo.representative.name}
                       </span>
                     </p>
                   </div>
 
-                  <div className="mt-5 pt-4 border-t border-stone-100 flex items-center justify-between">
+                  <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
                     <div className="flex items-center">
                       {visibleArtisans.map((artisan, index) => (
                         <img
                           key={artisan.id}
                           src={artisan.avatarUrl}
                           alt={artisan.name}
-                          className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm -ml-2 first:ml-0"
+                          className="w-8 h-8 rounded-full object-cover border-2 border-card shadow-sm -ml-2 first:ml-0"
                           style={{ zIndex: visibleArtisans.length - index }}
                         />
                       ))}
                       {extraCount > 0 && (
-                        <span className="w-8 h-8 rounded-full bg-stone-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-stone-600 -ml-2">
+                        <span className="w-8 h-8 rounded-full bg-muted border-2 border-card flex items-center justify-center text-[10px] font-bold text-muted-foreground -ml-2">
                           +{extraCount}
                         </span>
                       )}
@@ -253,7 +252,7 @@ export default function PolosPage() {
 
                     <Link
                       href={`/artesaos?polo=${encodeURIComponent(polo.name)}`}
-                      className="flex items-center gap-1 text-xs sm:text-sm font-semibold text-(--urucum) hover:underline shrink-0"
+                      className="flex items-center gap-1 text-xs sm:text-sm font-semibold text-brand-strong hover:underline shrink-0"
                     >
                       Ver mestres <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
@@ -265,24 +264,23 @@ export default function PolosPage() {
         )}
       </section>
 
-      {/* CTA final */}
       <section className="px-4 sm:px-8 lg:px-20 pb-10 sm:pb-14">
-        <div className="bg-[#FAF3EA] border border-amber-200/60 rounded-lg p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="bg-brand-soft border rounded-lg p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="flex items-start gap-3">
-            <Sparkles className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+            <Sparkles className="w-6 h-6 text-gold shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-lg sm:text-xl font-bold text-carvao">
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">
                 Seu ateliê também é um polo criativo?
               </h3>
-              <p className="text-sm text-stone-600 mt-1 max-w-xl">
-                Cadastre seu ofício na Manoa e ajude a mapear mais um
-                território da cultura popular pernambucana.
+              <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                Cadastre seu ofício na Manoa e ajude a mapear mais um território
+                da cultura popular pernambucana.
               </p>
             </div>
           </div>
           <Link
             href="/artesaos"
-            className="shrink-0 w-full md:w-auto text-center px-6 py-3 bg-(--barro) text-white font-semibold rounded-md hover:scale-105 transition-transform duration-100"
+            className="shrink-0 w-full md:w-auto text-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-md hover:scale-105 transition-transform duration-100"
           >
             Conhecer os Mestres
           </Link>
