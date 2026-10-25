@@ -4,14 +4,21 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 
 import { CardImageProduct } from "@/components/cards/card-image-product";
-import { FilterDrawer, FilterPanel } from "@/components/products/product-filters";
+import {
+  FilterDrawer,
+  FilterPanel,
+} from "@/components/products/product-filters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { productService } from "@/services/productService";
 import type { Product } from "@/types/product";
 
-const CATEGORIES = ["Cerâmica & Barro", "Rendas & Bordados", "Xilogravura & Cordel"];
+const CATEGORIES = [
+  "Cerâmica & Barro",
+  "Rendas & Bordados",
+  "Xilogravura & Cordel",
+];
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -32,7 +39,8 @@ export default function ProductsPage() {
         if (isMounted) setProducts(data);
       } catch (err) {
         console.error("Erro ao carregar acervo:", err);
-        if (isMounted) setError("Não foi possível carregar as obras do acervo.");
+        if (isMounted)
+          setError("Não foi possível carregar as obras do acervo.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -47,11 +55,15 @@ export default function ProductsPage() {
   const displayedProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return products.filter((product) => {
-      if (selectedCategory && product.category !== selectedCategory) return false;
+      if (selectedCategory && product.category !== selectedCategory)
+        return false;
       if (!query) return true;
-      return [product.name, product.description, product.category, product.location].some(
-        (field) => field?.toLowerCase().includes(query),
-      );
+      return [
+        product.name,
+        product.description,
+        product.category,
+        product.location,
+      ].some((field) => field?.toLowerCase().includes(query));
     });
   }, [products, searchQuery, selectedCategory]);
 
@@ -60,7 +72,8 @@ export default function ProductsPage() {
     setSelectedCategory("");
   };
 
-  const numPolos = new Set(products.map((p) => p.location).filter(Boolean)).size;
+  const numPolos = new Set(products.map((p) => p.location).filter(Boolean))
+    .size;
   const hasActiveFilters = !!(searchQuery || selectedCategory);
 
   const filterProps = {
@@ -89,7 +102,10 @@ export default function ProductsPage() {
 
       <div className="flex flex-col sm:flex-row gap-2 my-6 lg:my-10">
         <div className="relative flex items-center w-full">
-          <Search className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" aria-hidden />
+          <Search
+            className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none"
+            aria-hidden
+          />
           <Input
             id="search-product"
             type="search"
@@ -108,7 +124,9 @@ export default function ProductsPage() {
         >
           <SlidersHorizontal className="w-4 h-4" />
           Filtros
-          {selectedCategory && <span className="w-2 h-2 rounded-full bg-brand-strong" />}
+          {selectedCategory && (
+            <span className="w-2 h-2 rounded-full bg-brand-strong" />
+          )}
         </Button>
       </div>
 
@@ -117,7 +135,11 @@ export default function ProductsPage() {
           <FilterPanel {...filterProps} />
         </aside>
 
-        <FilterDrawer open={isFiltersOpen} onClose={() => setIsFiltersOpen(false)} {...filterProps} />
+        <FilterDrawer
+          open={isFiltersOpen}
+          onClose={() => setIsFiltersOpen(false)}
+          {...filterProps}
+        />
 
         <div className="w-full lg:w-[80%]">
           {isLoading ? (
@@ -125,14 +147,21 @@ export default function ProductsPage() {
               <Spinner className="size-8 text-brand" />
             </div>
           ) : error ? (
-            <div role="alert" className="p-6 bg-destructive/10 text-destructive rounded-md text-center">
+            <div
+              role="alert"
+              className="p-6 bg-destructive/10 text-destructive rounded-md text-center"
+            >
               {error}
             </div>
           ) : displayedProducts.length === 0 ? (
             <div className="p-10 text-center text-muted-foreground space-y-3">
               <p>Nenhuma peça encontrada para esta busca.</p>
               {hasActiveFilters && (
-                <Button variant="outline" onClick={clearFilters} className="cursor-pointer">
+                <Button
+                  variant="outline"
+                  onClick={clearFilters}
+                  className="cursor-pointer"
+                >
                   Limpar filtros
                 </Button>
               )}
