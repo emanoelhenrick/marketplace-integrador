@@ -7,12 +7,96 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  client
+  artisan
+  admin
+}
+
+enum OrderStatus {
+  pending
+  paid
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
+  role      UserRole @default(client)
+  avatarUrl String?
+  phone     String?
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  craft      String?
+  craftYears String?
+  quote      String?
+  location   String?
+  polo       String?
+  region     String?
+  totalWorks Int?
+
+  orders       Order[]
+  artisanItems OrderItem[] @relation("OrderItemArtisan")
+
   @@map("users")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Decimal  @db.Decimal(10, 2)
+  stars       Decimal  @db.Decimal(3, 1)
+  category    String
+  artisan     String
+  location    String
+  image       String?
+  description String?
+  quantity    Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  userId        String
+  customerName  String
+  customerEmail String
+  status        OrderStatus @default(paid)
+  totalAmount   Decimal     @db.Decimal(10, 2)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId Int
+  artisanId String?
+  quantity  Int      @default(1)
+  unitPrice Decimal  @db.Decimal(10, 2)
+  packed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  artisan User?   @relation("OrderItemArtisan", fields: [artisanId], references: [id])
+
+  @@map("order_items")
 }
