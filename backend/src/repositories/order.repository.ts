@@ -13,8 +13,8 @@ export type CreateOrderInput = Omit<
 export type UpdateOrderInput = Partial<CreateOrderInput>;
 
 export class OrderRepository {
-  async findAll(): Promise<OrderEntity[]> {
-    const orders = await prisma.order.findMany({
+  async findAll(client = prisma): Promise<OrderEntity[]> {
+    const orders = await client.order.findMany({
       include: {
         items: true,
       },
@@ -31,8 +31,8 @@ export class OrderRepository {
     );
   }
 
-  async findById(id: string): Promise<OrderEntity | null> {
-    const order = await prisma.order.findUnique({
+  async findById(id: string, client = prisma): Promise<OrderEntity | null> {
+    const order = await client.order.findUnique({
       where: { id },
       include: { items: true },
     });
@@ -48,8 +48,8 @@ export class OrderRepository {
     });
   }
 
-  async create(data: CreateOrderInput): Promise<OrderEntity> {
-    const order = await prisma.order.create({
+  async create(data: CreateOrderInput, client = prisma): Promise<OrderEntity> {
+    const order = await client.order.create({
       data: {
         id: data.id,
         userId: data.userId,
@@ -68,8 +68,8 @@ export class OrderRepository {
     });
   }
 
-  async update(id: string, data: UpdateOrderInput): Promise<OrderEntity | null> {
-    const order = await prisma.order.update({
+  async update(id: string, data: UpdateOrderInput, client = prisma): Promise<OrderEntity | null> {
+    const order = await client.order.update({
       where: { id },
       data: {
         userId: data.userId,
@@ -88,7 +88,7 @@ export class OrderRepository {
     });
   }
 
-  async delete(id: string): Promise<void> {
-    await prisma.order.delete({ where: { id } });
+  async delete(id: string, client = prisma): Promise<void> {
+    await client.order.delete({ where: { id } });
   }
 }

@@ -13,8 +13,8 @@ export type CreateProductInput = Omit<
 export type UpdateProductInput = Partial<CreateProductInput>;
 
 export class ProductRepository {
-  async findAll(): Promise<ProductEntity[]> {
-    const products = await prisma.product.findMany({
+  async findAll(client = prisma): Promise<ProductEntity[]> {
+    const products = await client.product.findMany({
       orderBy: { createdAt: "desc" },
     });
 
@@ -32,8 +32,8 @@ export class ProductRepository {
     );
   }
 
-  async findById(id: number): Promise<ProductEntity | null> {
-    const product = await prisma.product.findUnique({ where: { id } });
+  async findById(id: number, client = prisma): Promise<ProductEntity | null> {
+    const product = await client.product.findUnique({ where: { id } });
 
     if (!product) {
       return null;
@@ -50,8 +50,8 @@ export class ProductRepository {
     });
   }
 
-  async create(data: CreateProductInput): Promise<ProductEntity> {
-    const product = await prisma.product.create({
+  async create(data: CreateProductInput, client = prisma): Promise<ProductEntity> {
+    const product = await client.product.create({
       data: {
         name: data.name,
         price: data.price,
@@ -77,8 +77,8 @@ export class ProductRepository {
     });
   }
 
-  async update(id: number, data: UpdateProductInput): Promise<ProductEntity | null> {
-    const product = await prisma.product.update({
+  async update(id: number, data: UpdateProductInput, client = prisma): Promise<ProductEntity | null> {
+    const product = await client.product.update({
       where: { id },
       data: {
         name: data.name,
@@ -105,7 +105,7 @@ export class ProductRepository {
     });
   }
 
-  async delete(id: number): Promise<void> {
-    await prisma.product.delete({ where: { id } });
+  async delete(id: number, client = prisma): Promise<void> {
+    await client.product.delete({ where: { id } });
   }
 }
