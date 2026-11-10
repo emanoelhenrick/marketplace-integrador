@@ -31,6 +31,44 @@ export class OrderRepository {
     );
   }
 
+  async findByUserId(userId: string, client = prisma): Promise<OrderEntity[]> {
+    const orders = await client.order.findMany({
+      where: { userId },
+      include: { items: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return orders.map(
+      (order) =>
+        new OrderEntity({
+          ...order,
+          status: order.status as OrderStatus,
+          totalAmount: Number(order.totalAmount),
+        })
+    );
+  }
+
+  async findByIdAndUserId(
+    id: string,
+    userId: string,
+    client = prisma
+  ): Promise<OrderEntity | null> {
+    const order = await client.order.findFirst({
+      where: { id, userId },
+      include: { items: true },
+    });
+
+    if (!order) {
+      return null;
+    }
+
+    return new OrderEntity({
+      ...order,
+      status: order.status as OrderStatus,
+      totalAmount: Number(order.totalAmount),
+    });
+  }
+
   async findById(id: string, client = prisma): Promise<OrderEntity | null> {
     const order = await client.order.findUnique({
       where: { id },
