@@ -13,8 +13,8 @@ export type CreateOrderItemInput = Omit<
 export type UpdateOrderItemInput = Partial<CreateOrderItemInput>;
 
 export class OrderItemRepository {
-  async findAll(): Promise<OrderItemEntity[]> {
-    const items = await prisma.orderItem.findMany({
+  async findAll(client = prisma): Promise<OrderItemEntity[]> {
+    const items = await client.orderItem.findMany({
       orderBy: { createdAt: "desc" },
     });
 
@@ -28,8 +28,8 @@ export class OrderItemRepository {
     );
   }
 
-  async findById(id: string): Promise<OrderItemEntity | null> {
-    const item = await prisma.orderItem.findUnique({ where: { id } });
+  async findById(id: string, client = prisma): Promise<OrderItemEntity | null> {
+    const item = await client.orderItem.findUnique({ where: { id } });
 
     if (!item) {
       return null;
@@ -42,8 +42,8 @@ export class OrderItemRepository {
     });
   }
 
-  async findByOrderId(orderId: string): Promise<OrderItemEntity[]> {
-    const items = await prisma.orderItem.findMany({
+  async findByOrderId(orderId: string, client = prisma): Promise<OrderItemEntity[]> {
+    const items = await client.orderItem.findMany({
       where: { orderId },
       orderBy: { createdAt: "asc" },
     });
@@ -58,8 +58,8 @@ export class OrderItemRepository {
     );
   }
 
-  async create(data: CreateOrderItemInput): Promise<OrderItemEntity> {
-    const item = await prisma.orderItem.create({
+  async create(data: CreateOrderItemInput, client = prisma): Promise<OrderItemEntity> {
+    const item = await client.orderItem.create({
       data: {
         id: data.id,
         orderId: data.orderId,
@@ -78,8 +78,8 @@ export class OrderItemRepository {
     });
   }
 
-  async update(id: string, data: UpdateOrderItemInput): Promise<OrderItemEntity | null> {
-    const item = await prisma.orderItem.update({
+  async update(id: string, data: UpdateOrderItemInput, client = prisma): Promise<OrderItemEntity | null> {
+    const item = await client.orderItem.update({
       where: { id },
       data: {
         orderId: data.orderId,
@@ -98,7 +98,7 @@ export class OrderItemRepository {
     });
   }
 
-  async delete(id: string): Promise<void> {
-    await prisma.orderItem.delete({ where: { id } });
+  async delete(id: string, client = prisma): Promise<void> {
+    await client.orderItem.delete({ where: { id } });
   }
 }
