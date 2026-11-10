@@ -53,6 +53,19 @@ O servidor sobe em `http://localhost:3000`.
 | PUT    | /users/:id   | Atualiza um usuário     |
 | DELETE | /users/:id   | Remove um usuário       |
 
+## Rotas de pedidos (`/orders`)
+
+| Método | Rota        | Descrição                         |
+|--------|-------------|-----------------------------------|
+| GET    | /orders     | Lista os pedidos do usuário       |
+| GET    | /orders/:id | Busca um pedido do usuário por id |
+
+## Rotas de produtos (`/products`)
+
+| Método | Rota      | Descrição              |
+|--------|-----------|------------------------|
+| POST   | /products | Cadastra um produto    |
+
 ## Scripts
 
 - `npm run dev` — inicia com hot reload
