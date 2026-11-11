@@ -1,4 +1,10 @@
-import { CreateProductDto } from "../dto/product.dto";
+import {
+  CreateProductDto,
+  StatusUpdateDto,
+  StockUpdateDto,
+  ProductFiltersDto,
+  UpdateProductDto,
+} from "../dto/product.dto";
 import { BusinessError } from "../errors/business-error";
 
 export interface ValidatedCreateProductData {
@@ -11,7 +17,17 @@ export interface ValidatedCreateProductData {
   quantity: number;
 }
 
+export interface ValidatedUpdateProductData {
+  name: string;
+  category: string;
+  price: number;
+  location?: string;
+  description?: string;
+  image?: string;
+}
+
 const MAX_PRICE = 99999999.99;
+const MAX_QUANTITY = 2147483647;
 
 export function validateCreateProduct(
   data: CreateProductDto
@@ -54,7 +70,7 @@ function isBlank(value: unknown): boolean {
   return value === undefined || value === null || (typeof value === "string" && value.trim() === "");
 }
 
-function parsePrice(value: number | string): number {
+export function parsePrice(value: number | string): number {
   const normalizedValue = typeof value === "string" ? value.trim().replace(",", ".") : String(value);
 
   if (!isNumericPrice(normalizedValue)) {
@@ -94,18 +110,123 @@ function getDecimalPlaces(value: string): number {
   return Math.max(0, decimalPlaces - exponent);
 }
 
-function parseQuantity(value: CreateProductDto["quantity"]): number {
-  if (value === undefined || value === null || value === "") {
+export function parseQuantity(value: CreateProductDto["quantity"]): number {
+  if (
+    value === undefined ||
+    value === null ||
+    (typeof value === "string" && value.trim() === "")
+  ) {
     return 0;
   }
 
-  const quantity = typeof value === "string" ? Number(value.trim()) : value;
+  if (typeof value === "number") {
+    if (!Number.isFinite(value) || !Number.isInteger(value) || value < 0) {
+      throw new BusinessError(
+        "A quantidade deve ser um número inteiro maior ou igual a zero."
+      );
+    }
 
-  if (!Number.isInteger(quantity) || quantity < 0) {
+    if (value > MAX_QUANTITY) {
+      throw new BusinessError("A quantidade informada excede o valor máximo permitido.");
+    }
+
+    return value;
+  }
+
+  if (typeof value !== "string" || !/^\d+$/.test(value.trim())) {
+    throw new BusinessError(
+      "A quantidade deve ser um número inteiro maior ou igual a zero."
+    );
+  }
+
+  const quantity = Number(value.trim());
+
+  if (quantity > MAX_QUANTITY) {
+    throw new BusinessError("A quantidade informada excede o valor máximo permitido.");
+  }
+
+  if (!Number.isFinite(quantity) || !Number.isInteger(quantity) || quantity < 0) {
     throw new BusinessError(
       "A quantidade deve ser um número inteiro maior ou igual a zero."
     );
   }
 
   return quantity;
+}
+
+export function validateUpdateProduct(
+  data: UpdateProductDto
+): ValidatedUpdateProductData {
+  const missingFields: string[] = [];
+
+  if (isBlank(data.name)) {
+    missingFields.push("nome");
+  }
+
+  if (isBlank(data.category)) {
+    missingFields.push("categoria");
+  }
+
+  if (data.price === undefined || data.price === null || isBlank(data.price)) {
+    missingFields.push("preço");
+  }
+
+  if (missingFields.length > 0) {
+    throw new BusinessError(
+      `Campos obrigatórios não preenchidos: ${missingFields.join(", ")}.`
+    );
+  }
+
+  return {
+    name: data.name!.trim(),
+    category: data.category!.trim(),
+    price: parsePrice(data.price as number | string),
+    ...(isBlank(data.location) ? {} : { location: data.location!.trim() }),
+    ...(isBlank(data.description) ? {} : { description: data.description!.trim() }),
+    ...(isBlank(data.image) ? {} : { image: data.image!.trim() }),
+  };
+}
+
+export function validateStockUpdate(data: StockUpdateDto): number {
+  if (
+    data.quantity === undefined ||
+    data.quantity === null ||
+    (typeof data.quantity === "string" && data.quantity.trim() === "")
+  ) {
+    throw new BusinessError("Campos obrigatórios não preenchidos: quantidade.");
+  }
+
+  return parseQuantity(data.quantity);
+}
+
+export function validateStatusUpdate(data: StatusUpdateDto): boolean {
+  if (typeof data.active !== "boolean") {
+    throw new BusinessError("O campo ativo deve ser verdadeiro ou falso.");
+  }
+
+  return data.active;
+}
+
+export function validateProductFilters(query: unknown): ProductFiltersDto {
+  if (typeof query !== "object" || query === null) {
+    return {};
+  }
+
+  const category = (query as Record<string, unknown>).category;
+
+  if (category === undefined) {
+    return {};
+  }
+
+  if (typeof category !== "string") {
+    throw new BusinessError("Parâmetro de categoria inválido.");
+  }
+
+  const normalizedCategory = category.trim();
+
+  if (normalizedCategory.length > 100) {
+    throw new BusinessError("Parâmetro de categoria inválido.");
+  }
+
+  return normalizedCategory ? { category: normalizedCategory } : {};
 }

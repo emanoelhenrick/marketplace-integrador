@@ -1,5 +1,14 @@
 import { prisma } from "../prisma";
+import { Prisma } from "@prisma/client";
 import { OrderEntity, OrderStatus } from "../entities/order.entity";
+
+export type OrderWithArtisanItems = Prisma.OrderGetPayload<{
+  include: {
+    items: {
+      include: { product: { select: { name: true } } };
+    };
+  };
+}>;
 
 export type CreateOrderInput = Omit<
   OrderEntity,
@@ -13,6 +22,38 @@ export type CreateOrderInput = Omit<
 export type UpdateOrderInput = Partial<CreateOrderInput>;
 
 export class OrderRepository {
+  async findByArtisanId(
+    artisanId: string,
+    client = prisma
+  ): Promise<OrderWithArtisanItems[]> {
+    return client.order.findMany({
+      where: { items: { some: { artisanId } } },
+      include: {
+        items: {
+          where: { artisanId },
+          include: { product: { select: { name: true } } },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  async findByIdForArtisan(
+    id: string,
+    artisanId: string,
+    client = prisma
+  ): Promise<OrderWithArtisanItems | null> {
+    return client.order.findFirst({
+      where: { id, items: { some: { artisanId } } },
+      include: {
+        items: {
+          where: { artisanId },
+          include: { product: { select: { name: true } } },
+        },
+      },
+    });
+  }
+
   async findAll(client = prisma): Promise<OrderEntity[]> {
     const orders = await client.order.findMany({
       include: {
