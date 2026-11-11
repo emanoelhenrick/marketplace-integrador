@@ -60,11 +60,49 @@ O servidor sobe em `http://localhost:3000`.
 | GET    | /orders     | Lista os pedidos do usuário       |
 | GET    | /orders/:id | Busca um pedido do usuário por id |
 
+## Rotas de pedidos do artesão (`/artisan/orders`)
+
+| Método | Rota                | Descrição                             |
+|--------|---------------------|---------------------------------------|
+| GET    | /artisan/orders     | Lista pedidos dos produtos do artesão |
+| GET    | /artisan/orders/:id | Busca um pedido do artesão por id     |
+
 ## Rotas de produtos (`/products`)
 
 | Método | Rota      | Descrição              |
 |--------|-----------|------------------------|
 | POST   | /products | Cadastra um produto    |
+
+## Rota de catálogo (`GET /products?category=`)
+
+| Método | Rota                         | Descrição                                      |
+|--------|------------------------------|------------------------------------------------|
+| GET    | /products                    | Lista produtos ativos                           |
+| GET    | /products?category=<texto>   | Filtra produtos ativos por categoria            |
+| GET    | /products/:id                | Busca um produto ativo por id                   |
+
+Os filtros de técnica e região ainda não estão implementados.
+
+## Rotas de estoque (`/products/mine`, `/products/:id/stock`)
+
+| Método | Rota               | Descrição                         |
+|--------|--------------------|-----------------------------------|
+| GET    | /products/mine     | Lista o estoque do artesão        |
+| GET    | /products/:id/stock | Consulta o estoque de um produto  |
+
+O catálogo do artesão em `/products/mine` também retorna `stars`, `location`, `image` e `description`.
+
+As respostas de produto que incluem `quantity` também incluem `available`, calculado como `quantity > 0 && active`. Estoque zero torna o produto indisponível sem alterar `active`.
+
+Quantidade aceita apenas inteiros maiores ou iguais a zero, incluindo `0`, com limite máximo de `2147483647`. Valores negativos, decimais, texto e notação científica são rejeitados.
+
+## Rotas de alteração de produto (`/products/:id`, `/products/:id/status`, `/products/:id/stock`)
+
+| Método | Rota                 | Descrição                    |
+|--------|----------------------|------------------------------|
+| PUT    | /products/:id        | Edita um produto             |
+| PATCH  | /products/:id/status | Atualiza o status do produto |
+| PATCH  | /products/:id/stock  | Atualiza o estoque do produto |
 
 ## Scripts
 

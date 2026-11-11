@@ -43,6 +43,7 @@ model User {
 
   orders       Order[]
   artisanItems OrderItem[] @relation("OrderItemArtisan")
+  products     Product[]   @relation("ProductArtisan")
 
   @@map("users")
 }
@@ -54,6 +55,7 @@ model Product {
   stars       Decimal  @db.Decimal(3, 1)
   category    String
   artisan     String
+  artisanId    String?
   location    String
   image       String?
   description String?
@@ -63,6 +65,7 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   orderItems OrderItem[]
+  artisanUser User?      @relation("ProductArtisan", fields: [artisanId], references: [id])
 
   @@map("products")
 }

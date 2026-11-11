@@ -47,12 +47,23 @@ export class PurchaseService {
       };
     });
 
+    const consolidatedItems = Array.from(
+      parsedItems.reduce((itemsByProduct, item) => {
+        itemsByProduct.set(
+          item.productId,
+          (itemsByProduct.get(item.productId) ?? 0) + item.quantity
+        );
+        return itemsByProduct;
+      }, new Map<number, number>()),
+      ([productId, quantity]) => ({ productId, quantity })
+    );
+
     const products = await Promise.all(
-      parsedItems.map(({ productId }) => this.productRepository.findById(productId))
+      consolidatedItems.map(({ productId }) => this.productRepository.findById(productId))
     );
 
     const validatedProducts = products.map((product, index) => {
-      const requestedQuantity = parsedItems[index].quantity;
+      const requestedQuantity = consolidatedItems[index].quantity;
 
       if (!product) {
         throw new NotFoundError("Produto não encontrado.");
@@ -77,30 +88,46 @@ export class PurchaseService {
     const buyerUser = await this.userRepository.findById(buyer.id);
 
     return prisma.$transaction(async (tx) => {
-      const itemsToPersist = await Promise.all(
-        validatedProducts.map(async ({ product, quantity }) => {
-          const currentProduct = await this.productRepository.findById(product.id, tx as any);
+      const itemsToPersist: Array<{ product: ProductEntity; quantity: number }> = [];
 
-          if (!currentProduct) {
+      for (const { product, quantity } of validatedProducts) {
+        const currentProduct = await this.productRepository.findById(product.id, tx as any);
+
+        if (!currentProduct) {
+          throw new NotFoundError("Produto não encontrado.");
+        }
+
+        if (!currentProduct.active) {
+          throw new BusinessError("Produto inativo não pode ser comprado.");
+        }
+
+        const stockDecremented = await this.productRepository.decrementStock(
+          product.id,
+          quantity,
+          tx as any
+        );
+
+        if (!stockDecremented) {
+          const latestProduct = await this.productRepository.findById(product.id, tx as any);
+
+          if (!latestProduct) {
             throw new NotFoundError("Produto não encontrado.");
           }
 
-          if (!currentProduct.active) {
+          if (!latestProduct.active) {
             throw new BusinessError("Produto inativo não pode ser comprado.");
           }
 
-          if (quantity > currentProduct.quantity) {
-            throw new BusinessError(
-              `Quantidade solicitada (${quantity}) excede o estoque disponível (${currentProduct.quantity})`
-            );
-          }
+          throw new BusinessError(
+            `Quantidade solicitada (${quantity}) excede o estoque disponível (${latestProduct.quantity})`
+          );
+        }
 
-          return {
-            product: currentProduct,
-            quantity,
-          };
-        })
-      );
+        itemsToPersist.push({
+          product: currentProduct,
+          quantity,
+        });
+      }
 
       const totalAmount = itemsToPersist.reduce(
         (sum, { product, quantity }) => sum + Number(product.price) * quantity,
@@ -126,18 +153,11 @@ export class PurchaseService {
             quantity,
             unitPrice: Number(product.price),
             packed: false,
-            artisanId: null,
+            artisanId: product.artisanId,
           },
           tx as any
         );
 
-        await this.productRepository.update(
-          product.id,
-          {
-            quantity: product.quantity - quantity,
-          },
-          tx as any
-        );
       }
 
       return {
