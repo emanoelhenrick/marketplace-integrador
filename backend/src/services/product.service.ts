@@ -6,7 +6,10 @@ import {
 } from "../dto/product.dto";
 import { ProductEntity } from "../entities/product.entity";
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
-import { ProductRepository } from "../repositories/product.repository";
+import {
+  ProductRepository,
+  UpdateProductInput,
+} from "../repositories/product.repository";
 import { UserRepository } from "../repositories/user.repository";
 import {
   validateCreateProduct,
@@ -190,17 +193,12 @@ export class ProductService {
 
     const product = await this.findOwnedProduct(artisan.id, productId);
     const validatedData = validateUpdateProduct(data);
-    const updatedProduct = await this.productRepository.updateByIdAndArtisanId(
+
+    return this.persistProductUpdate(
       product.id,
       artisan.id,
       validatedData
     );
-
-    if (!updatedProduct) {
-      throw new ForbiddenError("Você não tem permissão para alterar este produto.");
-    }
-
-    return this.toUpdateResponse(updatedProduct);
   }
 
   async updateStatus(
@@ -212,17 +210,12 @@ export class ProductService {
 
     const product = await this.findOwnedProduct(artisan.id, productId);
     const active = validateStatusUpdate(data);
-    const updatedProduct = await this.productRepository.updateByIdAndArtisanId(
+
+    return this.persistProductUpdate(
       product.id,
       artisan.id,
       { active }
     );
-
-    if (!updatedProduct) {
-      throw new ForbiddenError("Você não tem permissão para alterar este produto.");
-    }
-
-    return this.toUpdateResponse(updatedProduct);
   }
 
   async updateStock(
@@ -234,17 +227,12 @@ export class ProductService {
 
     const product = await this.findOwnedProduct(artisan.id, productId);
     const quantity = validateStockUpdate(data);
-    const updatedProduct = await this.productRepository.updateByIdAndArtisanId(
+
+    return this.persistProductUpdate(
       product.id,
       artisan.id,
       { quantity }
     );
-
-    if (!updatedProduct) {
-      throw new ForbiddenError("Você não tem permissão para alterar este produto.");
-    }
-
-    return this.toUpdateResponse(updatedProduct);
   }
 
   private ensureArtisanCanUpdate(role: string) {
@@ -292,5 +280,26 @@ export class ProductService {
 
   private isAvailable(quantity: number, active: boolean) {
     return quantity > 0 && active;
+  }
+
+  private async persistProductUpdate(
+    productId: number,
+    artisanId: string,
+    data: UpdateProductInput
+  ) {
+    const updatedProduct =
+      await this.productRepository.updateByIdAndArtisanId(
+        productId,
+        artisanId,
+        data
+      );
+
+    if (!updatedProduct) {
+      throw new ForbiddenError(
+        "Você não tem permissão para alterar este produto."
+      );
+    }
+
+    return this.toUpdateResponse(updatedProduct);
   }
 }
