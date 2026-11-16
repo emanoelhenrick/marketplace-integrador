@@ -58,18 +58,7 @@ export class AuthService {
       }
     );
 
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatarUrl: user.avatarUrl,
-        phone: user.phone,
-        createdAt: user.createdAt,
-      },
-      token,
-    };
+    return { token };
   }
 
   async login(data: { email: string; password: string }) {
@@ -97,17 +86,6 @@ export class AuthService {
       }
     );
 
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatarUrl: user.avatarUrl,
-        phone: user.phone,
-        createdAt: user.createdAt,
-      },
-      token,
-    };
+    return { token };
   }
 }
