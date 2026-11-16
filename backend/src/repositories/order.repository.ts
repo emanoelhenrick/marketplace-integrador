@@ -2,6 +2,14 @@ import { prisma } from "../prisma";
 import { Prisma } from "@prisma/client";
 import { OrderEntity, OrderStatus } from "../entities/order.entity";
 
+const ORDER_WITH_ITEMS_INCLUDE = {
+  items: true,
+} satisfies Prisma.OrderInclude;
+
+type PrismaOrderWithItems = Prisma.OrderGetPayload<{
+  include: typeof ORDER_WITH_ITEMS_INCLUDE;
+}>;
+
 export type OrderWithArtisanItems = Prisma.OrderGetPayload<{
   include: {
     items: {
@@ -22,6 +30,14 @@ export type CreateOrderInput = Omit<
 export type UpdateOrderInput = Partial<CreateOrderInput>;
 
 export class OrderRepository {
+  private toEntity(order: PrismaOrderWithItems): OrderEntity {
+    return new OrderEntity({
+      ...order,
+      status: order.status as OrderStatus,
+      totalAmount: Number(order.totalAmount),
+    });
+  }
+
   async findByArtisanId(
     artisanId: string,
     client = prisma
@@ -56,37 +72,21 @@ export class OrderRepository {
 
   async findAll(client = prisma): Promise<OrderEntity[]> {
     const orders = await client.order.findMany({
-      include: {
-        items: true,
-      },
+      include: ORDER_WITH_ITEMS_INCLUDE,
       orderBy: { createdAt: "desc" },
     });
 
-    return orders.map(
-      (order) =>
-        new OrderEntity({
-          ...order,
-          status: order.status as OrderStatus,
-          totalAmount: Number(order.totalAmount),
-        })
-    );
+    return orders.map((order) => this.toEntity(order));
   }
 
   async findByUserId(userId: string, client = prisma): Promise<OrderEntity[]> {
     const orders = await client.order.findMany({
       where: { userId },
-      include: { items: true },
+      include: ORDER_WITH_ITEMS_INCLUDE,
       orderBy: { createdAt: "desc" },
     });
 
-    return orders.map(
-      (order) =>
-        new OrderEntity({
-          ...order,
-          status: order.status as OrderStatus,
-          totalAmount: Number(order.totalAmount),
-        })
-    );
+    return orders.map((order) => this.toEntity(order));
   }
 
   async findByIdAndUserId(
@@ -96,35 +96,19 @@ export class OrderRepository {
   ): Promise<OrderEntity | null> {
     const order = await client.order.findFirst({
       where: { id, userId },
-      include: { items: true },
+      include: ORDER_WITH_ITEMS_INCLUDE,
     });
 
-    if (!order) {
-      return null;
-    }
-
-    return new OrderEntity({
-      ...order,
-      status: order.status as OrderStatus,
-      totalAmount: Number(order.totalAmount),
-    });
+    return order ? this.toEntity(order) : null;
   }
 
   async findById(id: string, client = prisma): Promise<OrderEntity | null> {
     const order = await client.order.findUnique({
       where: { id },
-      include: { items: true },
+      include: ORDER_WITH_ITEMS_INCLUDE,
     });
 
-    if (!order) {
-      return null;
-    }
-
-    return new OrderEntity({
-      ...order,
-      status: order.status as OrderStatus,
-      totalAmount: Number(order.totalAmount),
-    });
+    return order ? this.toEntity(order) : null;
   }
 
   async create(data: CreateOrderInput, client = prisma): Promise<OrderEntity> {
@@ -137,17 +121,13 @@ export class OrderRepository {
         status: (data.status ?? "paid") as OrderStatus,
         totalAmount: data.totalAmount,
       },
-      include: { items: true },
+      include: ORDER_WITH_ITEMS_INCLUDE,
     });
 
-    return new OrderEntity({
-      ...order,
-      status: order.status as OrderStatus,
-      totalAmount: Number(order.totalAmount),
-    });
+    return this.toEntity(order);
   }
 
-  async update(id: string, data: UpdateOrderInput, client = prisma): Promise<OrderEntity | null> {
+  async update(id: string, data: UpdateOrderInput, client = prisma): Promise<OrderEntity> {
     const order = await client.order.update({
       where: { id },
       data: {
@@ -157,14 +137,10 @@ export class OrderRepository {
         status: data.status as OrderStatus | undefined,
         totalAmount: data.totalAmount,
       },
-      include: { items: true },
+      include: ORDER_WITH_ITEMS_INCLUDE,
     });
 
-    return new OrderEntity({
-      ...order,
-      status: order.status as OrderStatus,
-      totalAmount: Number(order.totalAmount),
-    });
+    return this.toEntity(order);
   }
 
   async delete(id: string, client = prisma): Promise<void> {
