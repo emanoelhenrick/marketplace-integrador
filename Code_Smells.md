@@ -24,3 +24,31 @@ Optou-se por **manter a implementação atual** pelos seguintes motivos técnico
 ## 4. Riscos e Limitações Reconhecidos
 
 - **Escalabilidade:** O método `getByArtisan` trafega todos os pedidos na rede antes de filtrar. Em ambiente de produção com alto volume de dados, essa abordagem deverá ser substituída por paginação e filtragem no servidor.
+
+---
+
+# Revisão Crítica de Código — `order.repository.ts`
+
+## 1. Code Smell Identificado
+
+- **Tipo:** Código Duplicado (*Duplicate Code*) e Mapeamento Repetitivo de Persistência (*Repeated Entity Mapping*).
+- **Localização:** `backend/src/repositories/order.repository.ts` (métodos `findAll`, `findByUserId`, `findByIdAndUserId`, `findById`, `create` e `update`).
+- **Descrição:** A classe repete 6 vezes o mesmo bloco de instanciação de `OrderEntity` (`new OrderEntity({ ...order, status: order.status as OrderStatus, totalAmount: Number(order.totalAmount) })`), além de repetir a cláusula `include: { items: true }` em 6 consultas distintas.
+
+## 2. Análise de Impacto
+
+- **Manutenibilidade e Extensibilidade:** Qualquer alteração no construtor de `OrderEntity` ou a inclusão de um novo campo numérico (`Decimal` no Prisma) exige editar 6 pontos diferentes na classe, elevando o risco de bugs por esquecimento.
+- **Coesão e Legibilidade:** A repetição do código de conversão polui os métodos de consulta, dificultando a leitura rápida de cada operação.
+
+## 3. Decisão Técnica: Refatorar
+
+Optou-se por **refatorar a classe** aplicando a técnica **Extract Method**:
+
+1. **Extração de Mapeador Privado (`toEntity`):** Centralização da conversão entre o modelo retornado pelo Prisma e `OrderEntity` em um único método privado `toEntity`.
+2. **Padronização da Cláusula de Inclusão (`ORDER_WITH_ITEMS_INCLUDE`):** Extração da configuração `include: { items: true }` tipada com `satisfies Prisma.OrderInclude`.
+3. **Ajuste de Contrato de Retorno (`update`):** Remoção de `| null` inalcançável no tipo de retorno do método `update`, alinhando a assinatura TypeScript ao comportamento real do `prisma.order.update`.
+
+## 4. Riscos e Limitações Reconhecidos
+
+- **Risco:** Baixo. A refatoração é estritamente interna à classe e preserva integralmente as assinaturas públicas e o comportamento em tempo de execução.
+- **Limitação:** Os métodos `findByArtisanId` e `findByIdForArtisan` continuam retornando o tipo projetado `OrderWithArtisanItems` (com `product.name` aninhado) em vez de `OrderEntity`, pois atendem à visão específica do painel do artesão sem quebrar os consumidores atuais.
