@@ -40,6 +40,7 @@ model User {
   polo       String?
   region     String?
   totalWorks Int?
+  culturalSeal Boolean @default(true)
 
   orders       Order[]
   artisanItems OrderItem[] @relation("OrderItemArtisan")
