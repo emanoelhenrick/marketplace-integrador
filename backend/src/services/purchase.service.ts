@@ -6,6 +6,7 @@ import { OrderRepository } from "../repositories/order.repository";
 import { OrderItemRepository } from "../repositories/order-item.repository";
 import { ProductRepository } from "../repositories/product.repository";
 import { UserRepository } from "../repositories/user.repository";
+import { randomInt } from "crypto";
 
 export class PurchaseService {
   constructor(
@@ -23,10 +24,25 @@ export class PurchaseService {
       throw new ForbiddenError("Usuário sem permissão para finalizar compras.");
     }
 
-    const items = data?.items ?? data?.itens ?? [];
+    const providedItems = data?.items ?? data?.itens ?? [];
+    let items = providedItems;
+    let sourcedFromCart = false;
 
     if (!Array.isArray(items) || items.length === 0) {
-      throw new BusinessError("Itens da compra são obrigatórios.");
+      const cart = await prisma.cart.findUnique({
+        where: { userId: buyer.id },
+        include: { items: true },
+      });
+
+      if (!cart || cart.items.length === 0) {
+        throw new BusinessError("Itens da compra são obrigatórios.");
+      }
+
+      items = cart.items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      }));
+      sourcedFromCart = true;
     }
 
     const parsedItems = items.map((item) => {
@@ -134,8 +150,11 @@ export class PurchaseService {
         0
       );
 
+      const orderId = await this.generateUniqueOrderId(tx);
+
       const order = await this.orderRepository.create(
         {
+          id: orderId,
           userId: buyer.id,
           customerName: buyerUser?.name ?? buyer.email,
           customerEmail: buyer.email,
@@ -160,10 +179,16 @@ export class PurchaseService {
 
       }
 
+      if (sourcedFromCart) {
+        await tx.cart.deleteMany({ where: { userId: buyer.id } });
+      }
+
       return {
         id: order.id,
         buyerId: buyer.id,
         totalAmount,
+        status: "paid",
+        statusLabel: "Aprovado (Simulado)",
         items: itemsToPersist.map(({ product, quantity }) => ({
           produtoId: product.id,
           quantidade: quantity,
@@ -171,5 +196,18 @@ export class PurchaseService {
         })),
       };
     });
+  }
+
+  private async generateUniqueOrderId(tx: any) {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const orderId = String(randomInt(100000, 1000000));
+      const existing = await tx.order.findUnique({ where: { id: orderId } });
+
+      if (!existing) {
+        return orderId;
+      }
+    }
+
+    throw new BusinessError("Não foi possível gerar um identificador único para o pedido.");
   }
 }
