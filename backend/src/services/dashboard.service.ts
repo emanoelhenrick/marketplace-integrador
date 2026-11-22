@@ -29,7 +29,7 @@ export class DashboardService {
       }),
       prisma.order.count({ where: orderWhere }),
       prisma.user.count({
-        where: { role: "artisan" },
+        where: { role: "artisan", active: true },
       }),
       prisma.orderItem.groupBy({
         by: ["productId"],

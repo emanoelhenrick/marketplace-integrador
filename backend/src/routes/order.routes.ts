@@ -1,52 +1,20 @@
 import { Router, Response } from "express";
 
-import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
 import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { OrderService } from "../services/order.service";
+import { asyncHandler } from "../middleware/error.middleware";
 
 const router = Router();
 const orderService = new OrderService();
 
-router.get("/", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
-  try {
+router.get("/", authMiddleware, requireRole("client"), asyncHandler<AuthenticatedRequest>(async (req, res) => {
     const result = await orderService.listByBuyer(req.user!);
     return res.status(200).json(result);
-  } catch (error) {
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({ error: error.message });
-    }
+}));
 
-    if (error instanceof ForbiddenError) {
-      return res.status(403).json({ error: error.message });
-    }
-
-    if (error instanceof BusinessError) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    return res.status(500).json({ error: "Erro ao buscar pedidos." });
-  }
-});
-
-router.get("/:id", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
-  try {
+router.get("/:id", authMiddleware, requireRole("client"), asyncHandler<AuthenticatedRequest>(async (req, res) => {
     const result = await orderService.getByIdForBuyer(req.user!, req.params.id);
     return res.status(200).json(result);
-  } catch (error) {
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({ error: error.message });
-    }
-
-    if (error instanceof ForbiddenError) {
-      return res.status(403).json({ error: error.message });
-    }
-
-    if (error instanceof BusinessError) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    return res.status(500).json({ error: "Erro ao buscar pedido." });
-  }
-});
+}));
 
 export default router;

@@ -39,7 +39,13 @@ export class ProductRepository {
     filters: { category?: string; municipality?: string; technique?: string },
     client = prisma
   ): Promise<ProductEntity[]> {
-    const where: Prisma.ProductWhereInput = { active: true };
+    const where: Prisma.ProductWhereInput = {
+      active: true,
+      OR: [
+        { artisanId: null },
+        { artisanUser: { is: { active: true } } },
+      ],
+    };
 
     if (filters.category) {
       where.category = {
@@ -115,6 +121,43 @@ export class ProductRepository {
           active: product.active,
         })
     );
+  }
+
+  async findActiveByArtisanId(
+    artisanId: string,
+    skip: number,
+    take: number,
+    client = prisma
+  ) {
+    const [products, total] = await client.$transaction([
+      client.product.findMany({
+        where: { artisanId, active: true },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+      }),
+      client.product.count({
+        where: { artisanId, active: true },
+      }),
+    ]);
+
+    return {
+      products: products.map(
+        (product) =>
+          new ProductEntity({
+            ...product,
+            price: Number(product.price),
+            stars: Number(product.stars),
+            artisanId: product.artisanId ?? null,
+            technique: product.technique ?? null,
+            image: product.image ?? null,
+            description: product.description ?? null,
+            quantity: product.quantity,
+            active: product.active,
+          })
+      ),
+      total,
+    };
   }
 
   async decrementStock(

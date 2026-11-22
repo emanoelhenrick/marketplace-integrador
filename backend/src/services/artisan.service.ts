@@ -1,5 +1,6 @@
 import { prisma } from "../prisma";
-import { NotFoundError } from "../errors/business-error";
+import { BusinessError, NotFoundError } from "../errors/business-error";
+import { ProductRepository } from "../repositories/product.repository";
 
 export interface ArtisanFilters {
   craft?: string;
@@ -25,6 +26,8 @@ const PUBLIC_ARTISAN_SELECT = {
 } as const;
 
 export class ArtisanService {
+  constructor(private readonly productRepository = new ProductRepository()) {}
+
   async list(filters: ArtisanFilters = {}) {
     return prisma.user.findMany({
       where: {
@@ -60,5 +63,61 @@ export class ArtisanService {
     }
 
     return artisan;
+  }
+
+  async getProducts(
+    artisanId: string,
+    pageValue?: string,
+    limitValue?: string
+  ) {
+    await this.getById(artisanId);
+
+    const page = this.parsePositiveInteger(pageValue, 1);
+    const limit = Math.min(this.parsePositiveInteger(limitValue, 12), 24);
+    const skip = (page - 1) * limit;
+    const { products, total } =
+      await this.productRepository.findActiveByArtisanId(
+        artisanId,
+        skip,
+        limit
+      );
+
+    return {
+      products: products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        stars: product.stars,
+        category: product.category,
+        technique: product.technique,
+        location: product.location,
+        image: product.image,
+        description: product.description,
+        quantity: product.quantity,
+        active: product.active,
+        available: product.active && product.quantity > 0,
+      })),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  private parsePositiveInteger(value: string | undefined, fallback: number) {
+    if (!value) {
+      return fallback;
+    }
+
+    const parsed = Number(value);
+    if (!Number.isInteger(parsed) || parsed < 1) {
+      throw new BusinessError(
+        "Página e limite devem ser números inteiros positivos."
+      );
+    }
+
+    return parsed;
   }
 }

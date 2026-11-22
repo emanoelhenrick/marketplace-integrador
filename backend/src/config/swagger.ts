@@ -23,9 +23,52 @@ export const swaggerSpec = swaggerJsdoc({
           bearerFormat: "JWT",
         },
       },
+      responses: {
+        BadRequest: {
+          description: "Dados inválidos ou regra de negócio não atendida.",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+            },
+          },
+        },
+        Unauthorized: {
+          description: "Token ausente, inválido ou expirado.",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+            },
+          },
+        },
+        Forbidden: {
+          description: "Usuário autenticado sem permissão para o recurso.",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+            },
+          },
+        },
+        NotFound: {
+          description: "Registro ou endpoint não encontrado.",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+            },
+          },
+        },
+        InternalServerError: {
+          description: "Erro interno do servidor.",
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ErrorResponse" },
+            },
+          },
+        },
+      },
       schemas: {
         ErrorResponse: {
           type: "object",
+          required: ["error"],
           properties: {
             error: { type: "string" },
           },
@@ -185,12 +228,33 @@ export const swaggerSpec = swaggerJsdoc({
           },
         },
       },
+      "/artisans/{id}/products": {
+        get: {
+          tags: ["Artesãos"],
+          summary: "Listar produtos ativos de um artesão",
+          parameters: [
+            { name: "id", in: "path", required: true, schema: { type: "string" } },
+            { name: "page", in: "query", schema: { type: "integer", minimum: 1, default: 1 } },
+            { name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 24, default: 12 } },
+          ],
+          responses: {
+            200: { description: "Produtos ativos paginados do artesão" },
+            400: { $ref: "#/components/responses/BadRequest" },
+            404: { $ref: "#/components/responses/NotFound" },
+            500: { $ref: "#/components/responses/InternalServerError" },
+          },
+        },
+      },
       "/auth/register": {
         post: {
           tags: ["Autenticação"],
           summary: "Cadastrar usuário",
           requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/RegisterRequest" } } } },
-          responses: { 201: { description: "Usuário criado" }, 400: { description: "Dados inválidos" } },
+          responses: {
+            201: { description: "Usuário criado" },
+            400: { $ref: "#/components/responses/BadRequest" },
+            500: { $ref: "#/components/responses/InternalServerError" },
+          },
         },
       },
       "/auth/login": {
@@ -198,7 +262,12 @@ export const swaggerSpec = swaggerJsdoc({
           tags: ["Autenticação"],
           summary: "Autenticar usuário",
           requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/LoginRequest" } } } },
-          responses: { 200: { description: "Token JWT" }, 401: { description: "Credenciais inválidas" } },
+          responses: {
+            200: { description: "Token JWT" },
+            400: { $ref: "#/components/responses/BadRequest" },
+            401: { $ref: "#/components/responses/Unauthorized" },
+            500: { $ref: "#/components/responses/InternalServerError" },
+          },
         },
       },
       "/auth/me": {
@@ -206,7 +275,12 @@ export const swaggerSpec = swaggerJsdoc({
           tags: ["Autenticação"],
           summary: "Consultar usuário autenticado",
           security: [{ bearerAuth: [] }],
-          responses: { 200: { description: "Usuário autenticado" }, 401: { description: "Não autenticado" } },
+          responses: {
+            200: { description: "Usuário autenticado" },
+            401: { $ref: "#/components/responses/Unauthorized" },
+            403: { $ref: "#/components/responses/Forbidden" },
+            500: { $ref: "#/components/responses/InternalServerError" },
+          },
         },
       },
       "/products": {

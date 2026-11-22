@@ -18,3 +18,10 @@ export class ForbiddenError extends BusinessError {
     this.name = "ForbiddenError";
   }
 }
+
+export class UnauthorizedError extends BusinessError {
+  constructor(message = "Usuário não autenticado.") {
+    super(message);
+    this.name = "UnauthorizedError";
+  }
+}

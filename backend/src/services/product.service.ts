@@ -162,6 +162,14 @@ export class ProductService {
       throw new NotFoundError("Produto não encontrado.");
     }
 
+    if (product.artisanId) {
+      const artisan = await this.userRepository.findById(product.artisanId);
+
+      if (!artisan || artisan.role !== "artisan" || !artisan.active) {
+        throw new NotFoundError("Produto não encontrado.");
+      }
+    }
+
     return {
       id: product.id,
       name: product.name,

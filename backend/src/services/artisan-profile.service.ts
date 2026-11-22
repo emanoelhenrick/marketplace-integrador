@@ -10,6 +10,7 @@ export class ArtisanProfileService {
         id: true,
         name: true,
         role: true,
+        active: true,
         avatarUrl: true,
         quote: true,
         location: true,
@@ -20,7 +21,7 @@ export class ArtisanProfileService {
       },
     });
 
-    if (!artisan || artisan.role !== "artisan") {
+    if (!artisan || artisan.role !== "artisan" || !artisan.active) {
       throw new NotFoundError("Artesão não encontrado.");
     }
 

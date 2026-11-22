@@ -5,6 +5,7 @@ import { UpdateArtisanProfileDto } from "../dto/artisan-profile.dto";
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
 import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { ArtisanProfileService } from "../services/artisan-profile.service";
+import { asyncHandler } from "../middleware/error.middleware";
 
 const router = Router();
 const artisanProfileService = new ArtisanProfileService();
@@ -13,8 +14,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-router.get("/", authMiddleware, requireRole("admin"), async (req: AuthenticatedRequest, res: Response) => {
-  try {
+router.get("/", authMiddleware, requireRole("admin"), asyncHandler<AuthenticatedRequest>(async (req, res) => {
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -29,29 +29,21 @@ router.get("/", authMiddleware, requireRole("admin"), async (req: AuthenticatedR
       },
     });
     return res.json(users);
-  } catch (error) {
-    return res.status(500).json({ error: "Erro ao buscar usuários" });
-  }
-});
+}));
 
 router.patch(
   "/:id/status",
   authMiddleware,
   requireRole("admin"),
-  async (req: AuthenticatedRequest, res: Response) => {
-    try {
+  asyncHandler<AuthenticatedRequest>(async (req, res) => {
       const active = req.body?.active;
 
       if (typeof active !== "boolean") {
-        return res.status(400).json({
-          error: "O campo active deve ser verdadeiro ou falso.",
-        });
+        throw new BusinessError("O campo active deve ser verdadeiro ou falso.");
       }
 
       if (req.params.id === req.user!.id) {
-        return res.status(400).json({
-          error: "Um administrador não pode desativar sua própria conta.",
-        });
+        throw new BusinessError("Um administrador não pode desativar sua própria conta.");
       }
 
       const user = await prisma.user.findUnique({
@@ -66,7 +58,7 @@ router.patch(
       });
 
       if (!user) {
-        return res.status(404).json({ error: "Usuário não encontrado." });
+        throw new NotFoundError("Usuário não encontrado.");
       }
 
       const updated = await prisma.user.update({
@@ -87,57 +79,31 @@ router.patch(
           : "Conta desativada com sucesso.",
         user: updated,
       });
-    } catch (error) {
-      return res.status(500).json({ error: "Erro ao atualizar status da conta." });
-    }
-  }
+  })
 );
 
-router.get("/:id/profile", async (req: Request, res: Response) => {
-  try {
+router.get("/:id/profile", asyncHandler(async (req: Request, res: Response) => {
     const result = await artisanProfileService.getPublicProfile(
       req.params.id,
       typeof req.query.page === "string" ? req.query.page : undefined,
       typeof req.query.limit === "string" ? req.query.limit : undefined
     );
     return res.json(result);
-  } catch (error) {
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({ error: error.message });
-    }
-    if (error instanceof BusinessError) {
-      return res.status(400).json({ error: error.message });
-    }
-    return res.status(500).json({ error: "Erro ao buscar perfil do artesão." });
-  }
-});
+}));
 
 router.patch(
   "/me/profile",
   authMiddleware,
   requireRole("artisan"),
   upload.single("avatar"),
-  async (req: AuthenticatedRequest, res: Response) => {
-    try {
+  asyncHandler<AuthenticatedRequest>(async (req, res) => {
       const result = await artisanProfileService.updateProfile(
         req.user!,
         req.body as UpdateArtisanProfileDto,
         req.file
       );
       return res.json(result);
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        return res.status(404).json({ error: error.message });
-      }
-      if (error instanceof ForbiddenError) {
-        return res.status(403).json({ error: error.message });
-      }
-      if (error instanceof BusinessError) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(500).json({ error: "Erro ao atualizar perfil do artesão." });
-    }
-  }
+  })
 );
 
 export default router;
