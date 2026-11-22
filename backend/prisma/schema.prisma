@@ -44,6 +44,7 @@ model User {
   orders       Order[]
   artisanItems OrderItem[] @relation("OrderItemArtisan")
   products     Product[]   @relation("ProductArtisan")
+  reviews      Review[]
 
   @@map("users")
 }
@@ -66,6 +67,7 @@ model Product {
 
   orderItems OrderItem[]
   artisanUser User?      @relation("ProductArtisan", fields: [artisanId], references: [id])
+  reviews     Review[]
 
   @@map("products")
 }
@@ -82,6 +84,7 @@ model Order {
 
   user  User        @relation(fields: [userId], references: [id])
   items OrderItem[]
+  reviews Review[]
 
   @@map("orders")
 }
@@ -102,4 +105,22 @@ model OrderItem {
   artisan User?   @relation("OrderItemArtisan", fields: [artisanId], references: [id])
 
   @@map("order_items")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  userId    String
+  productId Int
+  orderId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("reviews")
 }
