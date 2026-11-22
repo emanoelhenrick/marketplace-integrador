@@ -152,6 +152,13 @@ export const swaggerSpec = swaggerJsdoc({
       { name: "Administração" },
     ],
     paths: {
+      "/": {
+        get: {
+          tags: ["Sistema"],
+          summary: "Verificar disponibilidade da API",
+          responses: { 200: { description: "API online" } },
+        },
+      },
       "/auth/register": {
         post: {
           tags: ["Autenticação"],
@@ -202,6 +209,53 @@ export const swaggerSpec = swaggerJsdoc({
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
           responses: { 200: { description: "Detalhes do produto" }, 404: { description: "Produto não encontrado" } },
         },
+        put: {
+          tags: ["Produtos"],
+          summary: "Atualizar dados de um produto",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["name", "category", "price"],
+                  properties: {
+                    name: { type: "string" },
+                    category: { type: "string" },
+                    price: { type: "number" },
+                    location: { type: "string" },
+                    description: { type: "string" },
+                    image: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          responses: { 200: { description: "Produto atualizado" }, 400: { description: "Dados inválidos" }, 403: { description: "Produto de outro artesão" }, 404: { description: "Produto não encontrado" } },
+        },
+      },
+      "/products/mine": {
+        get: {
+          tags: ["Produtos"],
+          summary: "Listar produtos do artesão autenticado",
+          security: [{ bearerAuth: [] }],
+          responses: { 200: { description: "Catálogo do artesão" }, 403: { description: "Somente artesãos" } },
+        },
+      },
+      "/products/{id}/status": {
+        patch: {
+          tags: ["Produtos"],
+          summary: "Ativar ou desativar um produto",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+          requestBody: {
+            required: true,
+            content: { "application/json": { schema: { type: "object", required: ["active"], properties: { active: { type: "boolean" } } } } },
+          },
+          responses: { 200: { description: "Status atualizado" }, 400: { description: "Dados inválidos" }, 403: { description: "Produto de outro artesão" }, 404: { description: "Produto não encontrado" } },
+        },
       },
       "/products/{id}/stock": {
         patch: {
@@ -211,6 +265,13 @@ export const swaggerSpec = swaggerJsdoc({
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
           requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/StockUpdateRequest" } } } },
           responses: { 200: { description: "Estoque atualizado" }, 400: { description: "Quantidade inválida" }, 403: { description: "Sem permissão" }, 404: { description: "Produto não encontrado" } },
+        },
+        get: {
+          tags: ["Produtos"],
+          summary: "Consultar estoque de um produto próprio",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+          responses: { 200: { description: "Dados de estoque" }, 403: { description: "Produto de outro artesão" }, 404: { description: "Produto não encontrado" } },
         },
       },
       "/users/{id}/profile": {
@@ -360,6 +421,15 @@ export const swaggerSpec = swaggerJsdoc({
           responses: { 200: { description: "Pedidos relacionados ao artesão" } },
         },
       },
+      "/artisan/orders/{id}": {
+        get: {
+          tags: ["Pedidos"],
+          summary: "Consultar pedido recebido pelo artesão",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { 200: { description: "Pedido encontrado" }, 403: { description: "Pedido de outro artesão" }, 404: { description: "Pedido não encontrado" } },
+        },
+      },
       "/artisan/orders/{id}/status": {
         patch: {
           tags: ["Pedidos"],
@@ -384,6 +454,37 @@ export const swaggerSpec = swaggerJsdoc({
           tags: ["Avaliações"],
           summary: "Listar avaliações do produto",
           parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+          responses: { 200: { description: "Avaliações e média" }, 404: { description: "Produto não encontrado" } },
+        },
+        post: {
+          tags: ["Avaliações"],
+          summary: "Avaliar produto comprado",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["rating", "comment"],
+                  properties: {
+                    rating: { type: "integer", minimum: 1, maximum: 5 },
+                    comment: { type: "string" },
+                    orderId: { type: "string", nullable: true },
+                  },
+                },
+              },
+            },
+          },
+          responses: { 201: { description: "Avaliação criada" }, 400: { description: "Dados inválidos" }, 403: { description: "Compra não autorizada" }, 404: { description: "Produto não encontrado" } },
+        },
+      },
+      "/reviews/product/{productId}": {
+        get: {
+          tags: ["Avaliações"],
+          summary: "Listar avaliações por identificador do produto",
+          parameters: [{ name: "productId", in: "path", required: true, schema: { type: "integer" } }],
           responses: { 200: { description: "Avaliações e média" }, 404: { description: "Produto não encontrado" } },
         },
       },
