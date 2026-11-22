@@ -1,4 +1,5 @@
-import { ForbiddenError, NotFoundError } from "../errors/business-error";
+import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
+import { UpdateArtisanOrderStatusDto } from "../dto/artisan-order.dto";
 import {
   OrderRepository,
   OrderWithArtisanItems,
@@ -35,12 +36,62 @@ export class ArtisanOrderService {
     throw new ForbiddenError("Você não tem permissão para acessar este pedido.");
   }
 
+  async updateStatus(
+    artisan: { id: string; email: string; role: string },
+    orderId: string,
+    data: UpdateArtisanOrderStatusDto
+  ) {
+    this.ensureArtisan(artisan.role);
+
+    const order = await this.orderRepository.findByIdForArtisan(orderId, artisan.id);
+
+    if (!order) {
+      const existingOrder = await this.orderRepository.findById(orderId);
+
+      if (!existingOrder) {
+        throw new NotFoundError("Pedido não encontrado.");
+      }
+
+      throw new ForbiddenError("Você não tem permissão para atualizar este pedido.");
+    }
+
+    const status = this.validateStatus(data.status);
+    const updated = await this.orderRepository.update(orderId, { status });
+
+    return {
+      ...this.toResponse(order),
+      status: updated.status,
+    };
+  }
+
   private ensureArtisan(role: string) {
     if (role !== "artisan") {
       throw new ForbiddenError(
         "Usuário sem permissão para consultar pedidos de artesão."
       );
     }
+  }
+
+  private validateStatus(status: UpdateArtisanOrderStatusDto["status"]) {
+    const normalizedStatus: Record<
+      NonNullable<UpdateArtisanOrderStatusDto["status"]>,
+      "pending" | "processing" | "shipped"
+    > = {
+      pending: "pending",
+      Pendente: "pending",
+      processing: "processing",
+      "Em Produção": "processing",
+      shipped: "shipped",
+      Enviado: "shipped",
+    };
+
+    if (!status || !normalizedStatus[status]) {
+      throw new BusinessError(
+        'Status inválido. Use "Pendente", "Em Produção" ou "Enviado".'
+      );
+    }
+
+    return normalizedStatus[status];
   }
 
   private toResponse(order: OrderWithArtisanItems) {
