@@ -15,8 +15,7 @@ router.post("/finalize", authMiddleware, async (req: AuthenticatedRequest, res: 
     }
 
     const dto = req.body as FinalizePurchaseDto;
-    const purchaseItems = dto.items ?? dto.itens ?? [];
-    const result = await purchaseService.finalizePurchase(req.user, { items: purchaseItems });
+    const result = await purchaseService.finalizePurchase(req.user, dto);
 
     return res.status(201).json(result);
   } catch (error) {

@@ -7,6 +7,7 @@ import orderRoutes from "./routes/order.routes";
 import productRoutes from "./routes/product.routes";
 import artisanOrderRoutes from "./routes/artisan-order.routes";
 import reviewRoutes from "./routes/review.routes";
+import cartRoutes from "./routes/cart.routes";
 
 const app: Application = express();
 
@@ -24,5 +25,6 @@ app.use("/orders", orderRoutes);
 app.use("/products", productRoutes);
 app.use("/artisan/orders", artisanOrderRoutes);
 app.use("/reviews", reviewRoutes);
+app.use("/cart", cartRoutes);
 
 export default app;
