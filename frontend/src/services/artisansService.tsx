@@ -3,12 +3,12 @@ import { api } from "./api";
 
 export const artesiansService = {
   async getAll(): Promise<Artisan[]> {
-    const response = await api.get<Artisan[]>("/users", { params: { role: "artisan" } });
+    const response = await api.get<Artisan[]>("/artisans");
     return response.data.map(stripPrivate);
   },
 
   async getById(id: number | string): Promise<Artisan> {
-    const response = await api.get<Artisan>(`/users/${id}`);
+    const response = await api.get<Artisan>(`/artisans/${id}`);
     if (response.data.role !== "artisan") throw new Error("Usuário não é artesão");
     return stripPrivate(response.data);
   },

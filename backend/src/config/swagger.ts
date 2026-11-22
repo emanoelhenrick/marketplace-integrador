@@ -159,6 +159,32 @@ export const swaggerSpec = swaggerJsdoc({
           responses: { 200: { description: "API online" } },
         },
       },
+      "/artisans": {
+        get: {
+          tags: ["Artesãos"],
+          summary: "Listar todos os artesãos ativos",
+          parameters: [
+            { name: "craft", in: "query", schema: { type: "string" }, description: "Filtrar por técnica artesanal" },
+            { name: "location", in: "query", schema: { type: "string" }, description: "Filtrar por localidade" },
+            { name: "region", in: "query", schema: { type: "string" }, description: "Filtrar por região" },
+          ],
+          responses: {
+            200: { description: "Lista pública de artesãos ativos" },
+            500: { $ref: "#/components/schemas/ErrorResponse" },
+          },
+        },
+      },
+      "/artisans/{id}": {
+        get: {
+          tags: ["Artesãos"],
+          summary: "Consultar um artesão ativo",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            200: { description: "Dados públicos do artesão" },
+            404: { description: "Artesão não encontrado" },
+          },
+        },
+      },
       "/auth/register": {
         post: {
           tags: ["Autenticação"],

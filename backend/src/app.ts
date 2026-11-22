@@ -11,6 +11,7 @@ import cartRoutes from "./routes/cart.routes";
 import multer from "multer";
 import dashboardRoutes from "./routes/dashboard.routes";
 import docsRoutes from "./routes/docs.routes";
+import artisanRoutes from "./routes/artisan.routes";
 
 const app: Application = express();
 
@@ -30,6 +31,7 @@ app.use("/artisan/orders", artisanOrderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/cart", cartRoutes);
 app.use("/admin/dashboard", dashboardRoutes);
+app.use("/artisans", artisanRoutes);
 app.use("/docs", docsRoutes);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
