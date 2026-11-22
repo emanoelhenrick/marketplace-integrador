@@ -44,6 +44,7 @@ export class AuthService {
       polo: data.polo ?? null,
       region: data.region ?? null,
       totalWorks: data.totalWorks ?? null,
+      culturalSeal: true,
     });
 
     const token = jwt.sign(

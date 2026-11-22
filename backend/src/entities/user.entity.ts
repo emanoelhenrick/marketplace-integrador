@@ -17,6 +17,7 @@ export class UserEntity {
   polo: string | null;
   region: string | null;
   totalWorks: number | null;
+  culturalSeal: boolean;
 
   constructor(data: Partial<UserEntity> = {}) {
     this.id = data.id ?? "";
@@ -35,5 +36,6 @@ export class UserEntity {
     this.polo = data.polo ?? null;
     this.region = data.region ?? null;
     this.totalWorks = data.totalWorks ?? null;
+    this.culturalSeal = data.culturalSeal ?? true;
   }
 }

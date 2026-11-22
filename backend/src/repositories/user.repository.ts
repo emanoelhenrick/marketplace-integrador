@@ -32,6 +32,7 @@ export class UserRepository {
           polo: user.polo ?? null,
           region: user.region ?? null,
           totalWorks: user.totalWorks ?? null,
+          culturalSeal: user.culturalSeal,
         })
     );
   }
@@ -55,6 +56,7 @@ export class UserRepository {
       polo: user.polo ?? null,
       region: user.region ?? null,
       totalWorks: user.totalWorks ?? null,
+      culturalSeal: user.culturalSeal,
     });
   }
 
@@ -77,6 +79,7 @@ export class UserRepository {
       polo: user.polo ?? null,
       region: user.region ?? null,
       totalWorks: user.totalWorks ?? null,
+      culturalSeal: user.culturalSeal,
     });
   }
 
@@ -97,6 +100,7 @@ export class UserRepository {
         polo: data.polo ?? null,
         region: data.region ?? null,
         totalWorks: data.totalWorks ?? null,
+        culturalSeal: data.culturalSeal ?? true,
       },
     });
 
@@ -112,6 +116,7 @@ export class UserRepository {
       polo: user.polo ?? null,
       region: user.region ?? null,
       totalWorks: user.totalWorks ?? null,
+      culturalSeal: user.culturalSeal,
     });
   }
 
@@ -132,6 +137,7 @@ export class UserRepository {
         polo: data.polo ?? undefined,
         region: data.region ?? undefined,
         totalWorks: data.totalWorks ?? undefined,
+        culturalSeal: data.culturalSeal ?? undefined,
       },
     });
 
@@ -147,6 +153,7 @@ export class UserRepository {
       polo: user.polo ?? null,
       region: user.region ?? null,
       totalWorks: user.totalWorks ?? null,
+      culturalSeal: user.culturalSeal,
     });
   }
 

@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "culturalSeal" BOOLEAN NOT NULL DEFAULT true;
