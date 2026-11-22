@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "api online" });
+  res.json({ message: "online" });
 });
 
 app.use("/auth", authRoutes);
