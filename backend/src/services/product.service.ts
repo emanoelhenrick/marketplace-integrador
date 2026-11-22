@@ -27,7 +27,8 @@ export class ProductService {
 
   async create(
     artisan: { id: string; email: string; role: string },
-    data: CreateProductDto
+    data: CreateProductDto,
+    imageFile?: Express.Multer.File
   ) {
     if (artisan.role !== "artisan") {
       throw new ForbiddenError("Usuário sem permissão para cadastrar produtos.");
@@ -46,15 +47,35 @@ export class ProductService {
       throw new BusinessError("Localização é obrigatória.");
     }
 
+    let image = validatedData.image;
+
+    if (!imageFile && !image) {
+      throw new BusinessError("A imagem do produto é obrigatória.");
+    }
+
+    if (imageFile) {
+      if (imageFile.size > 5 * 1024 * 1024) {
+        throw new BusinessError("A imagem deve ter no máximo 5 MB.");
+      }
+
+      if (!this.isSupportedProductImage(imageFile)) {
+        throw new BusinessError("A imagem deve estar no formato PNG ou JPEG.");
+      }
+
+      image =
+        `data:${imageFile.mimetype};base64,${imageFile.buffer.toString("base64")}`;
+    }
+
     const product = await this.productRepository.create({
       name: validatedData.name,
       price: validatedData.price,
       stars: 0,
       category: validatedData.category,
+      technique: validatedData.technique,
       artisan: artisanUser.name,
       artisanId: artisan.id,
       location,
-      image: validatedData.image,
+      image,
       description: validatedData.description,
       quantity: validatedData.quantity,
       active: true,
@@ -65,6 +86,7 @@ export class ProductService {
       name: product.name,
       price: product.price,
       category: product.category,
+      technique: product.technique,
       artisan: product.artisan,
       location: product.location,
       image: product.image,
@@ -107,16 +129,23 @@ export class ProductService {
     return products.map((product) => ({
       id: product.id,
       name: product.name,
+      title: product.name,
       price: product.price,
       stars: product.stars,
       category: product.category,
+      technique: product.category,
       artisan: product.artisan,
+      artisanId: product.artisanId,
       location: product.location,
+      municipality: product.location,
       image: product.image,
       description: product.description,
       quantity: product.quantity,
       active: product.active,
       available: this.isAvailable(product.quantity, product.active),
+      availabilityStatus: this.isAvailable(product.quantity, product.active)
+        ? "Disponível"
+        : "Indisponível",
     }));
   }
 
@@ -136,16 +165,23 @@ export class ProductService {
     return {
       id: product.id,
       name: product.name,
+      title: product.name,
       price: product.price,
       stars: product.stars,
       category: product.category,
+      technique: product.category,
       artisan: product.artisan,
+      artisanId: product.artisanId,
       location: product.location,
+      municipality: product.location,
       image: product.image,
       description: product.description,
       quantity: product.quantity,
       active: product.active,
       available: this.isAvailable(product.quantity, product.active),
+      availabilityStatus: this.isAvailable(product.quantity, product.active)
+        ? "Disponível"
+        : "Indisponível",
     };
   }
 
@@ -267,6 +303,7 @@ export class ProductService {
       name: product.name,
       price: product.price,
       category: product.category,
+      technique: product.technique,
       artisan: product.artisan,
       location: product.location,
       image: product.image,
@@ -280,6 +317,28 @@ export class ProductService {
 
   private isAvailable(quantity: number, active: boolean) {
     return quantity > 0 && active;
+  }
+
+  private isSupportedProductImage(file: Express.Multer.File) {
+    if (file.mimetype === "image/png") {
+      return (
+        file.buffer.length >= 8 &&
+        file.buffer.subarray(0, 8).equals(
+          Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
+        )
+      );
+    }
+
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
+      return (
+        file.buffer.length >= 3 &&
+        file.buffer[0] === 255 &&
+        file.buffer[1] === 216 &&
+        file.buffer[2] === 255
+      );
+    }
+
+    return false;
   }
 
   private async persistProductUpdate(

@@ -2,13 +2,13 @@ import { Router, Response } from "express";
 
 import { FinalizePurchaseDto } from "../dto/purchase.dto";
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
-import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
+import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { PurchaseService } from "../services/purchase.service";
 
 const router = Router();
 const purchaseService = new PurchaseService();
 
-router.post("/finalize", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/finalize", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     if (!req.user || req.user.role !== "client") {
       throw new ForbiddenError("Usuário sem permissão para finalizar compras.");

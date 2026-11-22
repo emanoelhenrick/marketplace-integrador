@@ -57,6 +57,7 @@ model Product {
   price       Decimal  @db.Decimal(10, 2)
   stars       Decimal  @db.Decimal(3, 1)
   category    String
+  technique   String?
   artisan     String
   artisanId    String?
   location    String

@@ -1,13 +1,13 @@
 import { Router, Request, Response } from "express";
 import { CreateReviewDto } from "../dto/review.dto";
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
-import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
+import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { ReviewService } from "../services/review.service";
 
 const router = Router();
 const reviewService = new ReviewService();
 
-router.post("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const dto = req.body as CreateReviewDto;
     const productId = Number(dto.productId);

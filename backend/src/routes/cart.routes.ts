@@ -1,13 +1,13 @@
 import { Router, Response } from "express";
 import { AddCartItemDto, UpdateCartItemDto } from "../dto/cart.dto";
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
-import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
+import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { CartService } from "../services/cart.service";
 
 const router = Router();
 const cartService = new CartService();
 
-router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     return res.json(await cartService.getCart(req.user!));
   } catch (error) {
@@ -15,7 +15,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
   }
 });
 
-router.post("/items", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/items", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await cartService.addItem(req.user!, req.body as AddCartItemDto);
     return res.status(201).json(result);
@@ -24,7 +24,7 @@ router.post("/items", authMiddleware, async (req: AuthenticatedRequest, res: Res
   }
 });
 
-router.put("/items/:productId", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.put("/items/:productId", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await cartService.updateItem(
       req.user!,
@@ -37,7 +37,7 @@ router.put("/items/:productId", authMiddleware, async (req: AuthenticatedRequest
   }
 });
 
-router.delete("/items/:productId", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/items/:productId", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await cartService.removeItem(req.user!, req.params.productId);
     return res.json(result);
@@ -46,7 +46,7 @@ router.delete("/items/:productId", authMiddleware, async (req: AuthenticatedRequ
   }
 });
 
-router.delete("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     return res.json(await cartService.clearCart(req.user!));
   } catch (error) {

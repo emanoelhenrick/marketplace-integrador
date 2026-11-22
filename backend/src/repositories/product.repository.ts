@@ -26,6 +26,7 @@ export class ProductRepository {
           price: Number(product.price),
           stars: Number(product.stars),
           artisanId: product.artisanId ?? null,
+          technique: product.technique ?? null,
           image: product.image ?? null,
           description: product.description ?? null,
           quantity: product.quantity,
@@ -35,7 +36,7 @@ export class ProductRepository {
   }
 
   async findActive(
-    filters: { category?: string },
+    filters: { category?: string; municipality?: string; technique?: string },
     client = prisma
   ): Promise<ProductEntity[]> {
     const where: Prisma.ProductWhereInput = { active: true };
@@ -43,6 +44,13 @@ export class ProductRepository {
     if (filters.category) {
       where.category = {
         contains: filters.category,
+        mode: "insensitive",
+      };
+    }
+
+    if (filters.municipality) {
+      where.location = {
+        contains: filters.municipality,
         mode: "insensitive",
       };
     }
@@ -59,6 +67,7 @@ export class ProductRepository {
           price: Number(product.price),
           stars: Number(product.stars),
           artisanId: product.artisanId ?? null,
+          technique: product.technique ?? null,
           image: product.image ?? null,
           description: product.description ?? null,
           quantity: product.quantity,
@@ -79,6 +88,7 @@ export class ProductRepository {
       price: Number(product.price),
       stars: Number(product.stars),
       artisanId: product.artisanId ?? null,
+      technique: product.technique ?? null,
       image: product.image ?? null,
       description: product.description ?? null,
       quantity: product.quantity,
@@ -127,6 +137,7 @@ export class ProductRepository {
         price: data.price,
         stars: data.stars,
         category: data.category,
+        technique: data.technique ?? null,
         artisan: data.artisan,
         artisanId: data.artisanId ?? null,
         location: data.location,
@@ -157,6 +168,7 @@ export class ProductRepository {
         price: data.price,
         stars: data.stars,
         category: data.category,
+        technique: data.technique ?? undefined,
         artisan: data.artisan,
         artisanId: data.artisanId ?? undefined,
         location: data.location,

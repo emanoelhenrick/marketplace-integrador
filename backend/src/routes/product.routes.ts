@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import multer from "multer";
 
 import {
   CreateProductDto,
@@ -7,13 +8,17 @@ import {
   UpdateProductDto,
 } from "../dto/product.dto";
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
-import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
+import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { ProductService } from "../services/product.service";
 import { ReviewService } from "../services/review.service";
 
 const router = Router();
 const productService = new ProductService();
 const reviewService = new ReviewService();
+const uploadProductImage = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 router.get("/:id/reviews", async (req: Request, res: Response) => {
   try {
@@ -32,7 +37,7 @@ router.get("/:id/reviews", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/:id/reviews", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/:id/reviews", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const productId = Number(req.params.id);
 
@@ -69,7 +74,7 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/mine", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/mine", authMiddleware, requireRole("artisan"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await productService.listByArtisan(req.user!);
     return res.status(200).json(result);
@@ -111,7 +116,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.put("/:id", authMiddleware, requireRole("artisan"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await productService.update(
       req.user!,
@@ -136,7 +141,7 @@ router.put("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Respon
   }
 });
 
-router.patch("/:id/status", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id/status", authMiddleware, requireRole("artisan"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await productService.updateStatus(
       req.user!,
@@ -161,7 +166,7 @@ router.patch("/:id/status", authMiddleware, async (req: AuthenticatedRequest, re
   }
 });
 
-router.patch("/:id/stock", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id/stock", authMiddleware, requireRole("artisan"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await productService.updateStock(
       req.user!,
@@ -186,7 +191,7 @@ router.patch("/:id/stock", authMiddleware, async (req: AuthenticatedRequest, res
   }
 });
 
-router.get("/:id/stock", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:id/stock", authMiddleware, requireRole("artisan"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await productService.getStock(req.user!, req.params.id);
     return res.status(200).json(result);
@@ -207,9 +212,13 @@ router.get("/:id/stock", authMiddleware, async (req: AuthenticatedRequest, res: 
   }
 });
 
-router.post("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authMiddleware, requireRole("artisan"), uploadProductImage.single("image"), async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const result = await productService.create(req.user!, req.body as CreateProductDto);
+    const result = await productService.create(
+      req.user!,
+      req.body as CreateProductDto,
+      req.file
+    );
     return res.status(201).json(result);
   } catch (error) {
     if (error instanceof NotFoundError) {

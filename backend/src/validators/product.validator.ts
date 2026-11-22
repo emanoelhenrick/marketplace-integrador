@@ -10,6 +10,7 @@ import { BusinessError } from "../errors/business-error";
 export interface ValidatedCreateProductData {
   name: string;
   category: string;
+  technique: string;
   price: number;
   location: string;
   description: string | null;
@@ -33,17 +34,33 @@ export function validateCreateProduct(
   data: CreateProductDto
 ): ValidatedCreateProductData {
   const missingFields: string[] = [];
+  const name = data.name ?? data.title;
+  const technique = data.technique ?? data.category;
+  const municipality = data.municipality ?? data.location;
+  const category = data.category ?? data.technique;
 
-  if (isBlank(data.name)) {
+  if (isBlank(name)) {
     missingFields.push("nome");
   }
 
-  if (isBlank(data.category)) {
+  if (isBlank(category)) {
     missingFields.push("categoria");
+  }
+
+  if (isBlank(technique)) {
+    missingFields.push("técnica");
+  }
+
+  if (isBlank(municipality)) {
+    missingFields.push("município");
   }
 
   if (data.price === undefined || data.price === null || isBlank(data.price)) {
     missingFields.push("preço");
+  }
+
+  if (isBlank(data.quantity)) {
+    missingFields.push("estoque inicial");
   }
 
   if (missingFields.length > 0) {
@@ -56,10 +73,11 @@ export function validateCreateProduct(
   const quantity = parseQuantity(data.quantity);
 
   return {
-    name: data.name!.trim(),
-    category: data.category!.trim(),
+    name: name!.trim(),
+    category: category!.trim(),
+    technique: technique!.trim(),
     price,
-    location: data.location?.trim() ?? "",
+    location: municipality?.trim() ?? "",
     description: data.description?.trim() || null,
     image: data.image?.trim() || null,
     quantity,
@@ -212,21 +230,39 @@ export function validateProductFilters(query: unknown): ProductFiltersDto {
     return {};
   }
 
-  const category = (query as Record<string, unknown>).category;
+  const record = query as Record<string, unknown>;
+  const category = record.category ?? record.technique ?? record.techniqueName;
+  const municipality = record.location ?? record.municipality ?? record.municipio;
+  const filters: ProductFiltersDto = {};
 
-  if (category === undefined) {
-    return {};
+  if (category !== undefined) {
+    if (typeof category !== "string") {
+      throw new BusinessError("Parâmetro de técnica inválido.");
+    }
+
+    const normalizedCategory = category.trim();
+    if (normalizedCategory.length > 100) {
+      throw new BusinessError("Parâmetro de técnica inválido.");
+    }
+    if (normalizedCategory) {
+      filters.category = normalizedCategory;
+      filters.technique = normalizedCategory;
+    }
   }
 
-  if (typeof category !== "string") {
-    throw new BusinessError("Parâmetro de categoria inválido.");
+  if (municipality !== undefined) {
+    if (typeof municipality !== "string") {
+      throw new BusinessError("Parâmetro de município inválido.");
+    }
+
+    const normalizedMunicipality = municipality.trim();
+    if (normalizedMunicipality.length > 150) {
+      throw new BusinessError("Parâmetro de município inválido.");
+    }
+    if (normalizedMunicipality) {
+      filters.municipality = normalizedMunicipality;
+    }
   }
 
-  const normalizedCategory = category.trim();
-
-  if (normalizedCategory.length > 100) {
-    throw new BusinessError("Parâmetro de categoria inválido.");
-  }
-
-  return normalizedCategory ? { category: normalizedCategory } : {};
+  return filters;
 }

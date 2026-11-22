@@ -14,11 +14,13 @@ router.post("/register", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Nome, email e senha são obrigatórios." });
     }
 
+    const publicRole = role === "artisan" ? "artisan" : "client";
+
     const result = await authService.register({
       name,
       email,
       password,
-      role,
+      role: publicRole,
       avatarUrl,
       phone,
       craft,

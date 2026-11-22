@@ -1,13 +1,13 @@
 import { Router, Response } from "express";
 
 import { BusinessError, ForbiddenError, NotFoundError } from "../errors/business-error";
-import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
+import { authMiddleware, AuthenticatedRequest, requireRole } from "../middleware/auth.middleware";
 import { OrderService } from "../services/order.service";
 
 const router = Router();
 const orderService = new OrderService();
 
-router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await orderService.listByBuyer(req.user!);
     return res.status(200).json(result);
@@ -28,7 +28,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
   }
 });
 
-router.get("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:id", authMiddleware, requireRole("client"), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const result = await orderService.getByIdForBuyer(req.user!, req.params.id);
     return res.status(200).json(result);

@@ -4,6 +4,7 @@ export class ProductEntity {
   price: number;
   stars: number;
   category: string;
+  technique: string | null;
   artisan: string;
   artisanId: string | null;
   location: string;
@@ -20,6 +21,7 @@ export class ProductEntity {
     this.price = data.price ?? 0;
     this.stars = data.stars ?? 0;
     this.category = data.category ?? "";
+    this.technique = data.technique ?? null;
     this.artisan = data.artisan ?? "";
     this.artisanId = data.artisanId ?? null;
     this.location = data.location ?? "";
