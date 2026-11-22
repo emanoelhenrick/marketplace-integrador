@@ -27,6 +27,7 @@ model User {
   name      String
   email     String   @unique
   role      UserRole @default(client)
+  active    Boolean  @default(true)
   avatarUrl String?
   phone     String?
   password  String

@@ -45,6 +45,7 @@ export class AuthService {
       region: data.region ?? null,
       totalWorks: data.totalWorks ?? null,
       culturalSeal: true,
+      active: true,
     });
 
     const token = jwt.sign(
@@ -67,6 +68,10 @@ export class AuthService {
 
     if (!user) {
       throw new Error("Credenciais inválidas.");
+    }
+
+    if (!user.active) {
+      throw new Error("Conta desativada. Entre em contato com a administração.");
     }
 
     const validPassword = await bcrypt.compare(data.password, user.password);

@@ -23,6 +23,7 @@ export class UserRepository {
         new UserEntity({
           ...user,
           role: user.role as UserRole,
+          active: user.active,
           avatarUrl: user.avatarUrl ?? null,
           phone: user.phone ?? null,
           craft: user.craft ?? null,
@@ -47,6 +48,7 @@ export class UserRepository {
     return new UserEntity({
       ...user,
       role: user.role as UserRole,
+      active: user.active,
       avatarUrl: user.avatarUrl ?? null,
       phone: user.phone ?? null,
       craft: user.craft ?? null,
@@ -70,6 +72,7 @@ export class UserRepository {
     return new UserEntity({
       ...user,
       role: user.role as UserRole,
+      active: user.active,
       avatarUrl: user.avatarUrl ?? null,
       phone: user.phone ?? null,
       craft: user.craft ?? null,
@@ -90,6 +93,7 @@ export class UserRepository {
         name: data.name,
         email: data.email,
         role: (data.role ?? "client") as UserRole,
+        active: data.active ?? true,
         avatarUrl: data.avatarUrl ?? null,
         phone: data.phone ?? null,
         password: data.password,
@@ -107,6 +111,7 @@ export class UserRepository {
     return new UserEntity({
       ...user,
       role: user.role as UserRole,
+      active: user.active,
       avatarUrl: user.avatarUrl ?? null,
       phone: user.phone ?? null,
       craft: user.craft ?? null,
@@ -127,6 +132,7 @@ export class UserRepository {
         name: data.name,
         email: data.email,
         role: data.role as UserRole | undefined,
+        active: data.active,
         avatarUrl: data.avatarUrl ?? undefined,
         phone: data.phone ?? undefined,
         password: data.password,
@@ -144,6 +150,7 @@ export class UserRepository {
     return new UserEntity({
       ...user,
       role: user.role as UserRole,
+      active: user.active,
       avatarUrl: user.avatarUrl ?? null,
       phone: user.phone ?? null,
       craft: user.craft ?? null,

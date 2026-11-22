@@ -63,6 +63,7 @@ router.get("/me", authMiddleware, async (req: AuthenticatedRequest, res: Respons
         id: req.user?.id,
         email: req.user?.email,
         role: req.user?.role,
+        active: true,
       },
     });
   } catch (error) {

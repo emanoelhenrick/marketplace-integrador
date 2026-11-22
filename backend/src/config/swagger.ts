@@ -55,6 +55,7 @@ export const swaggerSpec = swaggerJsdoc({
             polo: { type: "string", nullable: true },
             region: { type: "string", nullable: true },
             totalWorks: { type: "integer", nullable: true },
+            culturalSeal: { type: "boolean", nullable: true },
           },
         },
         Product: {
@@ -224,6 +225,47 @@ export const swaggerSpec = swaggerJsdoc({
           responses: { 200: { description: "Perfil e catálogo paginado" }, 404: { description: "Artesão não encontrado" } },
         },
       },
+      "/users": {
+        get: {
+          tags: ["Administração"],
+          summary: "Listar usuários",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: { description: "Lista de usuários" },
+            403: { description: "Somente administradores" },
+          },
+        },
+      },
+      "/users/{id}/status": {
+        patch: {
+          tags: ["Administração"],
+          summary: "Ativar ou desativar uma conta",
+          security: [{ bearerAuth: [] }],
+          parameters: [
+            { name: "id", in: "path", required: true, schema: { type: "string" } },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["active"],
+                  properties: {
+                    active: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: "Status da conta atualizado" },
+            400: { description: "Valor inválido ou tentativa de desativar a própria conta" },
+            403: { description: "Somente administradores" },
+            404: { description: "Usuário não encontrado" },
+          },
+        },
+      },
       "/users/me/profile": {
         patch: {
           tags: ["Artesãos"],
@@ -254,6 +296,34 @@ export const swaggerSpec = swaggerJsdoc({
           security: [{ bearerAuth: [] }],
           requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/CartItemRequest" } } } },
           responses: { 201: { description: "Item adicionado" }, 400: { description: "Quantidade ou estoque inválido" } },
+        },
+      },
+      "/cart/items/{productId}": {
+        put: {
+          tags: ["Carrinho"],
+          summary: "Alterar quantidade de um item",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "productId", in: "path", required: true, schema: { type: "integer" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["quantity"],
+                  properties: { quantity: { type: "integer", minimum: 1 } },
+                },
+              },
+            },
+          },
+          responses: { 200: { description: "Quantidade atualizada" }, 400: { description: "Quantidade inválida" }, 404: { description: "Item não encontrado" } },
+        },
+        delete: {
+          tags: ["Carrinho"],
+          summary: "Remover item do carrinho",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "productId", in: "path", required: true, schema: { type: "integer" } }],
+          responses: { 200: { description: "Item removido" }, 404: { description: "Item não encontrado" } },
         },
       },
       "/purchases/finalize": {

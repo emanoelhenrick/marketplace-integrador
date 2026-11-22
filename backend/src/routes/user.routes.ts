@@ -25,8 +25,68 @@ router.get("/", authMiddleware, requireRole("admin"), async (req: AuthenticatedR
         location: true,
         craft: true,
         culturalSeal: true,
+        active: true,
       },
     });
+
+    router.patch(
+      "/:id/status",
+      authMiddleware,
+      requireRole("admin"),
+      async (req: AuthenticatedRequest, res: Response) => {
+        try {
+          const active = req.body?.active;
+
+          if (typeof active !== "boolean") {
+            return res.status(400).json({
+              error: "O campo active deve ser verdadeiro ou falso.",
+            });
+          }
+
+          if (req.params.id === req.user!.id) {
+            return res.status(400).json({
+              error: "Um administrador não pode desativar sua própria conta.",
+            });
+          }
+
+          const user = await prisma.user.findUnique({
+            where: { id: req.params.id },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+              active: true,
+            },
+          });
+
+          if (!user) {
+            return res.status(404).json({ error: "Usuário não encontrado." });
+          }
+
+          const updated = await prisma.user.update({
+            where: { id: req.params.id },
+            data: { active },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+              active: true,
+            },
+          });
+
+          return res.json({
+            message: active
+              ? "Conta ativada com sucesso."
+              : "Conta desativada com sucesso.",
+            user: updated,
+          });
+        } catch (error) {
+          return res.status(500).json({ error: "Erro ao atualizar status da conta." });
+        }
+      }
+    );
 
     return res.json(users);
   } catch (error) {

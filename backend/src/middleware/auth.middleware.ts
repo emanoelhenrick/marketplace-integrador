@@ -38,11 +38,15 @@ export const authMiddleware = async (
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, email: true, role: true },
+      select: { id: true, email: true, role: true, active: true },
     });
 
     if (!user) {
       return res.status(401).json({ error: "Usuário autenticado não encontrado." });
+    }
+
+    if (!user.active) {
+      return res.status(403).json({ error: "Conta desativada." });
     }
 
     req.user = {

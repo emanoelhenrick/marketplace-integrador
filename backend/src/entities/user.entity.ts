@@ -5,6 +5,7 @@ export class UserEntity {
   name: string;
   email: string;
   role: UserRole;
+  active: boolean;
   avatarUrl: string | null;
   phone: string | null;
   password: string;
@@ -24,6 +25,7 @@ export class UserEntity {
     this.name = data.name ?? "";
     this.email = data.email ?? "";
     this.role = data.role ?? "client";
+    this.active = data.active ?? true;
     this.avatarUrl = data.avatarUrl ?? null;
     this.phone = data.phone ?? null;
     this.password = data.password ?? "";
