@@ -41,9 +41,13 @@ export class ProductRepository {
   ): Promise<ProductEntity[]> {
     const where: Prisma.ProductWhereInput = {
       active: true,
-      OR: [
-        { artisanId: null },
-        { artisanUser: { is: { active: true } } },
+      AND: [
+        {
+          OR: [
+            { artisanId: null },
+            { artisanUser: { is: { active: true } } },
+          ],
+        },
       ],
     };
 
@@ -59,6 +63,15 @@ export class ProductRepository {
         contains: filters.location,
         mode: "insensitive",
       };
+    }
+
+    if (filters.technique) {
+      (where.AND as Prisma.ProductWhereInput[]).push({
+        technique: {
+          contains: filters.technique,
+          mode: "insensitive",
+        },
+      });
     }
 
     const products = await client.product.findMany({
@@ -246,6 +259,7 @@ export class ProductRepository {
         name: data.name,
         price: data.price,
         category: data.category,
+        technique: data.technique,
         location: data.location,
         image: data.image,
         description: data.description,

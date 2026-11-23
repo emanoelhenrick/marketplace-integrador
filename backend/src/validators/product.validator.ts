@@ -21,6 +21,7 @@ export interface ValidatedCreateProductData {
 export interface ValidatedUpdateProductData {
   name: string;
   category: string;
+  technique: string;
   price: number;
   location?: string;
   description?: string;
@@ -185,6 +186,10 @@ export function validateUpdateProduct(
     missingFields.push("categoria");
   }
 
+  if (isBlank(data.technique)) {
+    missingFields.push("técnica");
+  }
+
   if (data.price === undefined || data.price === null || isBlank(data.price)) {
     missingFields.push("preço");
   }
@@ -198,6 +203,7 @@ export function validateUpdateProduct(
   return {
     name: data.name!.trim(),
     category: data.category!.trim(),
+    technique: data.technique!.trim(),
     price: parsePrice(data.price as number | string),
     ...(isBlank(data.location) ? {} : { location: data.location!.trim() }),
     ...(isBlank(data.description) ? {} : { description: data.description!.trim() }),
@@ -231,22 +237,36 @@ export function validateProductFilters(query: unknown): ProductFiltersDto {
   }
 
   const record = query as Record<string, unknown>;
-  const category = record.category ?? record.technique ?? record.techniqueName;
+  const category = record.category;
+  const technique = record.technique ?? record.techniqueName;
   const location = record.location;
   const filters: ProductFiltersDto = {};
 
   if (category !== undefined) {
     if (typeof category !== "string") {
-      throw new BusinessError("Parâmetro de técnica inválido.");
+      throw new BusinessError("Invalid category parameter.");
     }
 
     const normalizedCategory = category.trim();
     if (normalizedCategory.length > 100) {
-      throw new BusinessError("Parâmetro de técnica inválido.");
+      throw new BusinessError("Invalid category parameter.");
     }
     if (normalizedCategory) {
       filters.category = normalizedCategory;
-      filters.technique = normalizedCategory;
+    }
+  }
+
+  if (technique !== undefined) {
+    if (typeof technique !== "string") {
+      throw new BusinessError("Invalid technique parameter.");
+    }
+
+    const normalizedTechnique = technique.trim();
+    if (normalizedTechnique.length > 100) {
+      throw new BusinessError("Invalid technique parameter.");
+    }
+    if (normalizedTechnique) {
+      filters.technique = normalizedTechnique;
     }
   }
 

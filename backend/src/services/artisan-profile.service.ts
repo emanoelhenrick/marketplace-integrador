@@ -60,6 +60,7 @@ export class ArtisanProfileService {
         price: Number(product.price),
         stars: Number(product.stars),
         category: product.category,
+        technique: product.technique,
         location: product.location,
         image: product.image,
         description: product.description,

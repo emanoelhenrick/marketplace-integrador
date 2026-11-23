@@ -12,6 +12,7 @@ export interface CreateProductDto {
 export interface UpdateProductDto {
   name?: string | null;
   category?: string | null;
+  technique?: string | null;
   price?: number | string | null;
   location?: string | null;
   description?: string | null;

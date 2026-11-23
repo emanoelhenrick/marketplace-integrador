@@ -22,7 +22,8 @@ export class AuthService {
     region?: string | null;
     totalWorks?: number | null;
   }) {
-    const existingUser = await this.userRepository.findByEmail(data.email);
+    const email = data.email.trim().toLowerCase();
+    const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
       throw new Error("Usuário já cadastrado.");
@@ -32,7 +33,7 @@ export class AuthService {
 
     const user = await this.userRepository.create({
       name: data.name,
-      email: data.email,
+      email,
       password: passwordHash,
       role: data.role ?? "client",
       avatarUrl: data.avatarUrl ?? null,
@@ -64,7 +65,8 @@ export class AuthService {
   }
 
   async login(data: { email: string; password: string }) {
-    const user = await this.userRepository.findByEmail(data.email);
+    const email = data.email.trim().toLowerCase();
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       throw new Error("Credenciais inválidas.");

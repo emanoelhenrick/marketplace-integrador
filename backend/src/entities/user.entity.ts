@@ -23,7 +23,7 @@ export class UserEntity {
   constructor(data: Partial<UserEntity> = {}) {
     this.id = data.id ?? "";
     this.name = data.name ?? "";
-    this.email = data.email ?? "";
+    this.email = (data.email ?? "").trim().toLowerCase();
     this.role = data.role ?? "client";
     this.active = data.active ?? true;
     this.avatarUrl = data.avatarUrl ?? null;
