@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Order, OrderStatus } from "@/types/order";
+import type { AdminMetrics } from "@/types/admin";
 import { formatBRL } from "@/lib/format";
 import { ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { KpiCard } from "./KpiCard";
@@ -15,23 +16,13 @@ import { OrderListItem, orderDateMeta } from "@/components/orders/order-list-ite
 import { EmptyBlock } from "@/components/common/page-state";
 
 interface AdminDashboardProps {
-  data: {
-    recentOrders: Order[];
-    totalRevenue: number;
-    statusCounts: Record<OrderStatus, number>;
-    uniqueCustomers: number;
-    topProducts: { name: string; qty: number; revenue: number }[];
-  };
-  totalProducts: number;
-  totalArtisans: number;
+  data: { metrics: AdminMetrics; recentOrders: Order[] };
 }
 
-export function AdminDashboard({
-  data,
-  totalProducts,
-  totalArtisans,
-}: AdminDashboardProps) {
-  const { recentOrders, totalRevenue, statusCounts, uniqueCustomers, topProducts } = data;
+export function AdminDashboard({ data }: AdminDashboardProps) {
+  const { metrics, recentOrders } = data;
+  const statusCounts = metrics.ordersByStatus;
+  const topProducts = metrics.topProducts;
 
   const statusData = (Object.keys(ORDER_STATUS_LABEL) as OrderStatus[]).map((status) => ({
     label: ORDER_STATUS_LABEL[status],
@@ -45,12 +36,12 @@ export function AdminDashboard({
         <KpiCard
           icon={<Wallet className="w-5 h-5" />}
           label="Receita total"
-          value={formatBRL(totalRevenue)}
+          value={formatBRL(metrics.revenue)}
           hint="Excluindo pedidos cancelados"
         />
-        <KpiCard icon={<Package className="w-5 h-5" />} label="Produtos no acervo" value={String(totalProducts)} />
-        <KpiCard icon={<Hammer className="w-5 h-5" />} label="Artesãos ativos" value={String(totalArtisans)} />
-        <KpiCard icon={<Users className="w-5 h-5" />} label="Clientes únicos" value={String(uniqueCustomers)} />
+        <KpiCard icon={<Package className="w-5 h-5" />} label="Pedidos" value={String(metrics.ordersTotal)} hint={`${metrics.activeProducts} produtos ativos`} />
+        <KpiCard icon={<Hammer className="w-5 h-5" />} label="Artesãos ativos" value={String(metrics.activeArtisans)} />
+        <KpiCard icon={<Users className="w-5 h-5" />} label="Usuários ativos" value={String(metrics.activeUsers)} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">

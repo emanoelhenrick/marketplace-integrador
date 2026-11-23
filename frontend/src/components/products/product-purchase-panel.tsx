@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Info, ShoppingBag } from "lucide-react";
+import { Info, PackageX, ShoppingBag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { QuantitySelector } from "@/components/products/quantity-selector";
-import { useSession } from "@/hooks/use-session";
 import { useAddToCart } from "@/hooks/use-add-to-cart";
+import { useSession } from "@/hooks/use-session";
+import { maxQuantityFor } from "@/lib/cart";
+import { isPurchasable } from "@/lib/catalog";
 import type { Product } from "@/types/product";
 
-/**
- * Área de compra do produto, conforme o perfil:
- * - visitante/cliente: quantidade + adicionar ao carrinho
- * - artesão dono da peça: atalhos de gestão
- * - outros artesãos e administrador: aviso (não compram)
- */
 export function ProductPurchasePanel({ product }: { product: Product }) {
   const { user, role, canPurchase } = useSession();
   const addToCart = useAddToCart();
@@ -23,41 +19,75 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
 
   if (!canPurchase) {
     const isOwner = role === "artisan" && String(user?.id) === String(product.artisanId);
+    
+    let noticeMessage = "Contas de artesão não realizam compras. Acesse com uma conta de cliente para prosseguir.";
+    let actionRoute = "/login";
+    let actionText = "Trocar de conta";
+
+    if (isOwner) {
+      noticeMessage = "Esta peça pertence ao seu ateliê. Você pode gerenciar o estoque e a disponibilidade no seu painel.";
+      actionRoute = `/products/${product.id}/edit`;
+      actionText = "Editar peça";
+    } else if (role === "admin") {
+      noticeMessage = "Visualização de administrador. As funções de compra são exclusivas para contas de clientes.";
+      actionText = "Ir para curadoria";
+    }
+
     return (
-      <div className="rounded-md border bg-muted/50 p-4 flex flex-col sm:flex-row sm:items-center gap-3 text-sm">
-        <Info className="w-5 h-5 text-brand shrink-0" aria-hidden />
+      <div className="flex flex-col gap-3 rounded-md border bg-muted/50 p-4 sm:flex-row sm:items-center text-sm">
+        <Info className="h-5 w-5 shrink-0 text-brand" aria-hidden />
         <p className="flex-1 text-muted-foreground">
-          {isOwner
-            ? "Esta peça é do seu ateliê. Acompanhe as vendas no seu painel."
-            : role === "admin"
-              ? "Você está visualizando como administrador. Compras são exclusivas para clientes."
-              : "Contas de artesão não realizam compras. Entre com uma conta de cliente para comprar."}
+          {noticeMessage}
         </p>
         <Button
-          render={<Link href={isOwner || role === "admin" ? "/dashboard" : "/login"} />}
+          render={<Link href={actionRoute} />}
           variant="outline"
           size="sm"
           className="shrink-0"
         >
-          {isOwner || role === "admin" ? "Ir para o painel" : "Trocar de conta"}
+          {actionText}
         </Button>
       </div>
     );
   }
 
+  if (!isPurchasable(product)) {
+    return (
+      <div 
+        role="status" 
+        className="flex items-center gap-3 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive"
+      >
+        <PackageX className="h-5 w-5 shrink-0" aria-hidden />
+        <p>Esta peça está temporariamente esgotada.</p>
+      </div>
+    );
+  }
+
+  // 3. Fluxo normal de compra
+  const max = maxQuantityFor(product);
+  const currentQuantity = Math.min(quantity, max);
+
   const handleAddToCart = () => {
-    addToCart(product, quantity);
-    setQuantity(1);
+    if (currentQuantity > 0) {
+      const success = addToCart(product, currentQuantity);
+      if (success) setQuantity(1);
+    }
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3">
-      <QuantitySelector value={quantity} onChange={setQuantity} />
+    <div className="flex flex-col gap-3 sm:flex-row">
+      <QuantitySelector 
+        value={currentQuantity} 
+        onChange={setQuantity} 
+        max={max} 
+      />
+      
       <Button
         onClick={handleAddToCart}
-        className="flex-1 py-6 sm:py-3 font-semibold cursor-pointer hover:scale-[1.02] transition-transform duration-100 flex items-center justify-center gap-2"
+        disabled={max < 1}
+        className="flex flex-1 items-center justify-center gap-2 py-6 font-semibold transition-transform duration-100 hover:scale-[1.02] sm:py-3 cursor-pointer"
       >
-        <ShoppingBag className="w-4 h-4" />
+        <ShoppingBag className="h-4 w-4" />
         Adicionar ao Carrinho
       </Button>
     </div>

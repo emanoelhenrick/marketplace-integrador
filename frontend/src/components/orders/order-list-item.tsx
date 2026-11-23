@@ -20,7 +20,7 @@ export function OrderListItem({
 }: OrderListItemProps) {
   return (
     <Link
-      href={`/pedido/${order.id}`}
+      href={`/order/${order.id}`}
       className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 justify-between rounded-lg border p-3.5 hover:bg-muted/60 transition-colors"
     >
       <div className="min-w-0">

@@ -16,7 +16,7 @@ interface CardArtisanProps {
 
 export default function CardArtisan({ artisan }: CardArtisanProps) {
   return (
-    <Link href={`/artesaos/${artisan.id}`} className="block h-full group">
+    <Link href={`/artisans/${artisan.id}`} className="block h-full group">
       <Card className="bg-card w-full h-full border border-border flex flex-col justify-between hover:shadow-md transition-all duration-200 cursor-pointer">
         <div>
           <div className="flex items-center gap-5 px-5 pt-5">
@@ -30,8 +30,8 @@ export default function CardArtisan({ artisan }: CardArtisanProps) {
                 {artisan.name}
               </CardTitle>
               <CardDescription className="text-xs text-muted-foreground">
-                {artisan.craft} •{" "}
-                {artisan.location.split(",")[1] || artisan.location}
+                {artisan.craft} • {" "}
+                {artisan.location}
               </CardDescription>
               <div className="flex items-center gap-1.5 text-gold font-bold text-xs mt-1">
                 <CircleStar className="w-4 h-4 shrink-0" />

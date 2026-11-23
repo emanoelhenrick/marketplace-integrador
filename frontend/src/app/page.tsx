@@ -1,6 +1,6 @@
-import { FeaturedArtisans } from "@/components/home/featured-artisans";
-import { HeroSection } from "@/components/home/hero-section";
-import { MatrizesSection } from "@/components/home/matrizes-section";
+import { FeaturedArtisans } from "@/app/_components/featured-artisans";
+import { HeroSection } from "@/app/_components/hero-section";
+import { MatrizesSection } from "@/app/_components/matrizes-section";
 
 export default function Home() {
   return (

@@ -4,7 +4,10 @@ import { Award, CircleUserRound, MapPin } from "lucide-react";
 
 import type { Artisan } from "@/types/artisan";
 
+/** Perfil público do artesão: só dados públicos (sem e-mail ou telefone). */
 export function ArtisanAbout({ artisan }: { artisan: Artisan }) {
+  const tags = [...(artisan.techniques ?? []), ...(artisan.materials ?? [])];
+
   return (
     <div className="bg-brand-soft border rounded-md p-5 sm:p-8">
       <p className="text-xs font-bold text-brand uppercase tracking-wider mb-4">Sobre o Mestre</p>
@@ -30,15 +33,23 @@ export function ArtisanAbout({ artisan }: { artisan: Artisan }) {
             <MapPin className="w-3.5 h-3.5 text-brand-strong shrink-0" />
             {artisan.location}
           </p>
+          {artisan.bio && <p className="text-sm text-foreground/90 leading-relaxed pt-1 line-clamp-5">{artisan.bio}</p>}
           {artisan.quote && (
-            <p className="text-xs sm:text-sm text-muted-foreground italic leading-relaxed pt-1">
-              &ldquo;{artisan.quote}&rdquo;
-            </p>
+            <p className="text-xs sm:text-sm text-muted-foreground italic leading-relaxed pt-1">&ldquo;{artisan.quote}&rdquo;</p>
+          )}
+          {tags.length > 0 && (
+            <ul className="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1" aria-label="Técnicas e materiais">
+              {tags.map((tag) => (
+                <li key={tag} className="text-[11px] border rounded-full px-2.5 py-0.5 text-muted-foreground bg-card">
+                  {tag}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 
         <Link
-          href={`/artesaos/${artisan.id}`}
+          href={`/artisans/${artisan.id}`}
           className="shrink-0 w-full sm:w-auto text-center px-5 py-2.5 bg-card border text-sm font-semibold rounded-md hover:bg-muted transition-colors"
         >
           Ver perfil do mestre

@@ -1,6 +1,6 @@
 import type { Order } from "@/types/order";
+import type { Product } from "@/types/product";
 import type { User, UserRole } from "@/types/user";
-
 
 export const ROLE_LABEL: Record<UserRole, string> = {
   client: "Cliente",
@@ -12,12 +12,24 @@ export type Role = UserRole | null; // null = visitante
 
 const same = (a: unknown, b: unknown) => String(a) === String(b);
 
+/** Perfis permitidos por área. Usado pelos RoleGuard e pelo menu. */
+export const ACCESS = {
+  anyUser: ["client", "artisan", "admin"],
+  client: ["client"],
+  artisan: ["artisan"],
+  admin: ["admin"],
+} as const satisfies Record<string, readonly UserRole[]>;
+
+export const allowRoles = (list: readonly UserRole[]): UserRole[] => [...list];
+
 /** Visitantes e clientes compram; artesãos e administradores não. */
 export const canPurchase = (role: Role) => role === null || role === "client";
 
 export const canManageProducts = (role: Role) => role === "artisan";
 
-export const canUpdateOrderStatus = (role: Role) => role === "admin";
+/** Só o dono edita/desativa a peça (o admin modera em outra tela). */
+export const canEditProduct = (user: User | null, product: Pick<Product, "artisanId">) =>
+  !!user && user.role === "artisan" && same(user.id, product.artisanId);
 
 /** Dono do ateliê ou administrador enxerga a gestão (vendas, repasse, pedidos). */
 export function canManageArtisan(user: User | null, artisanId: number | string) {
@@ -41,7 +53,7 @@ export function visibleOrderItems(user: User | null, order: Order) {
 }
 
 export const getHomeRoute = (role: Role) =>
-  role === "client" || role === null ? "/produtos" : "/dashboard";
+  role === "client" || role === null ? "/products" : "/dashboard";
 
 export const getDashboardLabel = (role: Role) =>
   role === "admin"
@@ -57,9 +69,9 @@ export interface NavItem {
 
 export function getNavLinks(role: Role): NavItem[] {
   const common: NavItem[] = [
-    { href: "/produtos", label: "Produtos" },
-    { href: "/artesaos", label: "Mestres e Histórias" },
-    { href: "/polos", label: "Polos Criativos" },
+    { href: "/products", label: "Produtos" },
+    { href: "/artisans", label: "Mestres e Histórias" },
+    { href: "/poles", label: "Polos Criativos" },
   ];
 
   if (role === "client") return [...common, { href: "/dashboard", label: "Meus pedidos" }];
@@ -67,9 +79,14 @@ export function getNavLinks(role: Role): NavItem[] {
     return [
       ...common,
       { href: "/dashboard", label: "Minhas vendas" },
-      { href: "/produtos/novo", label: "Adicionar produto" },
+      { href: "/products/new", label: "Adicionar produto" },
     ];
-  if (role === "admin") return [...common, { href: "/dashboard", label: "Painel" }];
+  if (role === "admin")
+    return [
+      ...common,
+      { href: "/dashboard", label: "Painel" },
+      { href: "/admin/users", label: "Usuários" },
+    ];
   return common;
 }
 

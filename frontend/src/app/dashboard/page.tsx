@@ -6,6 +6,7 @@ import { AdminDashboard } from "@/components/cards/AdminDashboard";
 import { ArtisanDashboard } from "@/components/cards/ArtisanDashboard";
 import { ClientDashboard } from "@/components/cards/ClientDashboard";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { ACCESS, allowRoles } from "@/lib/permissions";
 
 const COPY = {
   admin: {
@@ -28,8 +29,6 @@ function DashboardContent() {
     role,
     isLoading,
     error,
-    products,
-    artisans,
     clientData,
     artisanData,
     adminData,
@@ -39,7 +38,11 @@ function DashboardContent() {
   if (isLoading) return <PageLoading label="Carregando seu painel..." />;
   if (error) return <PageMessage title="Ops, algo deu errado" description={error} />;
 
-  const copy = COPY[role];
+  // Adicionado type assertion para TypeScript e fallback de segurança
+  const copy = COPY[role as keyof typeof COPY] || {
+    title: "Seu Painel",
+    subtitle: "Acompanhe suas atividades na plataforma.",
+  };
 
   return (
     <main className="px-4 sm:px-8 lg:px-20 py-2 sm:py-4 space-y-8">
@@ -52,14 +55,14 @@ function DashboardContent() {
       </div>
 
       {role === "admin" && adminData && (
-        <AdminDashboard
-          data={adminData}
-          totalProducts={products.length}
-          totalArtisans={artisans.length}
-        />
+        <AdminDashboard data={adminData} />
       )}
-      {role === "artisan" && artisanData && <ArtisanDashboard data={artisanData} />}
-      {role === "client" && clientData && <ClientDashboard data={clientData} />}
+      {role === "artisan" && artisanData && (
+        <ArtisanDashboard data={artisanData} />
+      )}
+      {role === "client" && clientData && (
+        <ClientDashboard data={clientData} />
+      )}
     </main>
   );
 }
@@ -67,7 +70,7 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <RoleGuard
-      allow={["client", "artisan", "admin"]}
+      allow={allowRoles(ACCESS.anyUser)}
       loginTitle="Você precisa entrar para ver seu painel"
       loginDescription="Entre com sua conta para acompanhar pedidos, vendas e o desempenho do seu acervo na Manoa."
     >

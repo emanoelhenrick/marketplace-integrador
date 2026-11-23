@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LogIn, ShieldAlert, Loader2, Eye, EyeOff } from "lucide-react";
+import { LogIn, ShieldAlert, Loader2, Eye, EyeOff, UserPlus } from "lucide-react";
 
 import {
   Card,
@@ -16,8 +16,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/common/page-state";
-import { authService } from "@/services/authService";
-import { useAuthStore } from "@/store/authStore";
+import { useLogin } from "@/hooks/use-login";
 import { useSession } from "@/hooks/use-session";
 import { getHomeRoute, safeRedirect } from "@/lib/permissions";
 import { toast } from "@/lib/toast";
@@ -25,18 +24,18 @@ import { toast } from "@/lib/toast";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const login = useAuthStore((state) => state.login);
+  const { login, error, isLoading } = useLogin();
   const { ready, isAuthenticated, role } = useSession();
 
   const redirectParam = searchParams.get("redirect");
+  const registerHref = redirectParam
+    ? `/register?redirect=${encodeURIComponent(redirectParam)}`
+    : "/register";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Quem já está logado não deve ver o formulário de login.
   useEffect(() => {
     if (ready && isAuthenticated && !isLoading) {
       router.replace(safeRedirect(redirectParam, getHomeRoute(role)));
@@ -45,24 +44,12 @@ function LoginForm() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const user = await authService.login({ email: email.trim(), password });
-      login(user);
-      toast.success(`Bem-vindo(a), ${user.name.split(" ")[0]}!`, {
-        description: "Login realizado com sucesso.",
-      });
-      router.push(safeRedirect(redirectParam, getHomeRoute(user.role)));
-    } catch (err) {
-      setError(
-        err instanceof Error && err.message.includes("senha")
-          ? err.message
-          : "Não foi possível entrar. Verifique sua conexão e tente novamente.",
-      );
-      setIsLoading(false);
-    }
+    const user = await login({ email: email.trim(), password });
+    if (!user) return;
+    toast.success(`Bem-vindo(a), ${user.name.split(" ")[0]}!`, {
+      description: "Login realizado com sucesso.",
+    });
+    router.push(safeRedirect(redirectParam, getHomeRoute(user.role)));
   };
 
   if (!ready || isAuthenticated) return <PageLoading />;
@@ -145,9 +132,23 @@ function LoginForm() {
             </Button>
           </form>
 
+          <div className="relative flex items-center justify-center">
+            <span className="border-t w-full" />
+            <span className="bg-card px-2 text-xs text-muted-foreground whitespace-nowrap">
+              Ainda não tem conta?
+            </span>
+            <span className="border-t w-full" />
+          </div>
+
+          <Button variant="outline" className="w-full py-4 font-semibold">
+            <Link href={registerHref} className="flex items-center justify-center gap-2">
+              <UserPlus className="w-4 h-4" /> Criar conta na Manoa
+            </Link>
+          </Button>
+
           <p className="text-center text-xs text-muted-foreground">
             Só quer olhar as peças?{" "}
-            <Link href="/produtos" className="text-brand font-semibold hover:underline">
+            <Link href="/products" className="text-brand font-semibold hover:underline">
               Continue navegando como visitante
             </Link>
           </p>
@@ -158,7 +159,6 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
-  // useSearchParams exige Suspense no build do Next.
   return (
     <Suspense fallback={<PageLoading />}>
       <LoginForm />

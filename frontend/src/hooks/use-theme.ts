@@ -1,28 +1,35 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const THEME_STORAGE_KEY = "manoa-theme";
+const THEME_EVENT = "manoa-theme-change";
 
-function getInitialIsDark() {
-  if (typeof document === "undefined") return false;
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(THEME_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(THEME_EVENT, callback);
+  };
+}
+
+function getSnapshot() {
   return document.documentElement.classList.contains("dark");
 }
 
-export function useTheme() {
-  const [isDark, setIsDark] = useState<boolean>(getInitialIsDark);
+function getServerSnapshot() {
+  return false;
+}
 
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+export function useTheme() {
+  const isDark = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const toggleTheme = useCallback(() => {
-    setIsDark((prev) => {
-      const next = !prev;
-      document.documentElement.classList.toggle("dark", next);
-      window.localStorage.setItem(THEME_STORAGE_KEY, next ? "dark" : "light");
-      return next;
-    });
+    const next = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", next);
+    window.localStorage.setItem(THEME_STORAGE_KEY, next ? "dark" : "light");
+    window.dispatchEvent(new Event(THEME_EVENT));
   }, []);
 
   return { isDark, toggleTheme };

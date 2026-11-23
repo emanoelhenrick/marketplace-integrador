@@ -12,7 +12,10 @@ interface NavLinksProps {
   onNavigate?: () => void;
 }
 
-export function NavLinks({ orientation = "horizontal", onNavigate }: NavLinksProps) {
+export function NavLinks({
+  orientation = "horizontal",
+  onNavigate,
+}: NavLinksProps) {
   const { role } = useSession();
   const pathname = usePathname();
   const links = getNavLinks(role);
@@ -30,7 +33,9 @@ export function NavLinks({ orientation = "horizontal", onNavigate }: NavLinksPro
       {links.map((link) => {
         const active =
           pathname === link.href ||
-          (link.href !== "/" && pathname.startsWith(`${link.href}/`) && link.href !== "/produtos");
+          (link.href !== "/" &&
+            pathname.startsWith(`${link.href}/`) &&
+            link.href !== "/products");
         return (
           <Link
             key={link.href}
@@ -43,7 +48,9 @@ export function NavLinks({ orientation = "horizontal", onNavigate }: NavLinksPro
                 ? "after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:bg-brand-strong after:transition-all after:duration-300 hover:text-brand-strong"
                 : "rounded-md px-3 py-3 hover:bg-muted",
               orientation === "horizontal" &&
-                (active ? "after:w-full text-brand-strong" : "after:w-0 hover:after:w-full text-foreground/80"),
+                (active
+                  ? "after:w-full text-brand-strong"
+                  : "after:w-0 hover:after:w-full text-foreground/80"),
               orientation === "vertical" &&
                 (active ? "bg-muted text-brand-strong" : "text-foreground/80"),
             )}

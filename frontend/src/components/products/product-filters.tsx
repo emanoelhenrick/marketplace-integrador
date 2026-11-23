@@ -2,25 +2,25 @@
 
 import { useEffect } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
-import { cn } from "cn";
 
 import { Button } from "@/components/ui/button";
 
-interface FilterPanelProps {
-  categories: string[];
+export interface FilterGroup {
+  key: string;
+  label: string;
+  options: string[];
   selected: string;
-  onSelect: (category: string) => void;
+  onSelect: (value: string) => void;
+}
+
+interface FilterPanelProps {
+  groups: FilterGroup[];
   onClear: () => void;
   hasActiveFilters: boolean;
 }
 
-export function FilterPanel({
-  categories,
-  selected,
-  onSelect,
-  onClear,
-  hasActiveFilters,
-}: FilterPanelProps) {
+/** Filtros combináveis em formato select (categoria, técnica, região). Selecionar "" limpa o critério. */
+export function FilterPanel({ groups, onClear, hasActiveFilters }: FilterPanelProps) {
   return (
     <>
       <div className="flex items-center mb-4">
@@ -37,24 +37,31 @@ export function FilterPanel({
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold">Categorias</p>
-        {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            aria-pressed={selected === category}
-            onClick={() => onSelect(selected === category ? "" : category)}
-            className={cn(
-              "text-left text-sm py-1.5 px-3 rounded transition-colors cursor-pointer",
-              selected === category
-                ? "bg-primary text-primary-foreground font-medium"
-                : "hover:bg-muted",
-            )}
-          >
-            {category}
-          </button>
-        ))}
+      <div className="flex flex-col gap-4">
+        {groups.map((group) => {
+          const selectId = `filter-${group.key}`;
+
+          return (
+            <div key={group.key} className="flex flex-col gap-1.5">
+              <label htmlFor={selectId} className="text-sm font-semibold text-foreground">
+                {group.label}
+              </label>
+              <select
+                id={selectId}
+                value={group.selected ?? ""}
+                onChange={(e) => group.onSelect(e.target.value)}
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
+              >
+                <option value="">Todas</option>
+                {group.options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        })}
       </div>
     </>
   );

@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import {
   CircleUserRound,
   LayoutDashboard,
+  LogIn,
   LogOut,
   PackagePlus,
   Store,
+  UserPlus,
   UserRound,
 } from "lucide-react";
 
@@ -17,7 +19,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useSession } from "@/hooks/use-session";
 import { getDashboardLabel, ROLE_LABEL } from "@/lib/permissions";
 import { toast } from "@/lib/toast";
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 
 interface UserMenuProps {
   iconClassName?: string;
@@ -26,7 +28,9 @@ interface UserMenuProps {
 const itemClass =
   "flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors text-left w-full";
 
-export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMenuProps) {
+export function UserMenu({
+  iconClassName = "w-7 h-7 text-brand-strong",
+}: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -37,7 +41,10 @@ export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMe
     if (!isOpen) return;
 
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -102,7 +109,9 @@ export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMe
                 )}
                 <div className="min-w-0">
                   <p className="text-sm font-semibold truncate">{user.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </p>
                   {role && (
                     <p className="text-[11px] font-semibold text-brand mt-0.5">
                       {ROLE_LABEL[role]}
@@ -112,17 +121,28 @@ export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMe
               </div>
 
               <nav className="flex flex-col py-1 text-sm">
-                <Link href="/perfil" role="menuitem" onClick={close} className={itemClass}>
+                <Link
+                  href="/profile"
+                  role="menuitem"
+                  onClick={close}
+                  className={itemClass}
+                >
                   <UserRound className="w-4 h-4" /> Meu perfil
                 </Link>
-                <Link href="/dashboard" role="menuitem" onClick={close} className={itemClass}>
-                  <LayoutDashboard className="w-4 h-4" /> {getDashboardLabel(role)}
+                <Link
+                  href="/dashboard"
+                  role="menuitem"
+                  onClick={close}
+                  className={itemClass}
+                >
+                  <LayoutDashboard className="w-4 h-4" />{" "}
+                  {getDashboardLabel(role)}
                 </Link>
 
                 {isArtisan && (
                   <>
                     <Link
-                      href={`/artesaos/${user.id}`}
+                      href={`/artisans/${user.id}`}
                       role="menuitem"
                       onClick={close}
                       className={itemClass}
@@ -130,7 +150,7 @@ export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMe
                       <Store className="w-4 h-4" /> Meu ateliê
                     </Link>
                     <Link
-                      href="/produtos/novo"
+                      href="/products/new"
                       role="menuitem"
                       onClick={close}
                       className={itemClass}
@@ -144,7 +164,10 @@ export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMe
                   type="button"
                   role="menuitem"
                   onClick={handleLogout}
-                  className={cn(itemClass, "text-brand-strong cursor-pointer border-t mt-1")}
+                  className={cn(
+                    itemClass,
+                    "text-brand-strong cursor-pointer border-t mt-1",
+                  )}
                 >
                   <LogOut className="w-4 h-4" /> Sair
                 </button>
@@ -155,16 +178,28 @@ export function UserMenu({ iconClassName = "w-7 h-7 text-brand-strong" }: UserMe
               <div>
                 <p className="text-sm font-semibold">Você ainda não entrou</p>
                 <p className="text-xs text-muted-foreground">
-                  Entre para acompanhar pedidos ou, se for artesão, gerenciar seu ateliê.
+                  Entre para acompanhar pedidos ou, se for artesão, gerenciar
+                  seu ateliê.
                 </p>
               </div>
-              <Link
-                href="/login"
-                onClick={close}
-                className="flex items-center justify-center gap-2 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/85 transition-colors"
-              >
-                Entrar
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/login"
+                  role="menuitem"
+                  onClick={close}
+                  className="flex items-center justify-center gap-2 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/85 transition-colors"
+                >
+                  <LogIn className="w-4 h-4" /> Entrar
+                </Link>
+                <Link
+                  href="/register"
+                  role="menuitem"
+                  onClick={close}
+                  className="flex items-center justify-center gap-2 py-2 rounded-md border border-input bg-background text-sm font-semibold hover:bg-muted transition-colors"
+                >
+                  <UserPlus className="w-4 h-4" /> Criar conta
+                </Link>
+              </div>
             </div>
           )}
         </div>

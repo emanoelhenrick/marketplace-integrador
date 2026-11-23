@@ -1,12 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product, CartItem } from "@/types/product";
+import { addToCart, cartTotals, reconcileCart, setQuantity, type AddResult } from "@/lib/cart";
+import type { Id } from "@/types/common";
+import type { CartItem, Product } from "@/types/product";
 
 interface CartStore {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  addItem: (product: Product, quantity?: number) => AddResult;
+  removeItem: (productId: Id) => void;
+  updateQuantity: (productId: Id, quantity: number) => void;
+  /** Atualiza snapshots (preço/estoque) e remove/apara o que ficou indisponível. */
+  syncWithCatalog: (fresh: Product[]) => void;
   clearCart: () => void;
   totalItems: () => number;
   totalPrice: () => number;
@@ -15,61 +19,31 @@ interface CartStore {
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
-  items: [],
+      items: [],
 
-  addItem: (product, quantity = 1) => {
-    if (quantity <= 0) return;
+      addItem: (product, quantity = 1) => {
+        const result = addToCart(get().items, product, quantity);
+        if (result.items !== get().items) set({ items: result.items });
+        return result;
+      },
 
-    set((state) => {
-      const existing = state.items.find(
-        (item) => item.product.id === product.id,
-      );
+      removeItem: (productId) =>
+        set((state) => ({ items: state.items.filter((i) => String(i.product.id) !== String(productId)) })),
 
-      if (existing) {
-        return {
-          items: state.items.map((item) =>
-            item.product.id === product.id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item,
-          ),
-        };
-      }
+      updateQuantity: (productId, quantity) =>
+        set((state) => ({ items: setQuantity(state.items, productId, quantity) })),
 
-      return { items: [...state.items, { product, quantity }] };
-    });
-  },
+      syncWithCatalog: (fresh) => set((state) => ({ items: reconcileCart(state.items, fresh) })),
 
-  removeItem: (productId) => {
-    set((state) => ({
-      items: state.items.filter((item) => item.product.id !== productId),
-    }));
-  },
+      clearCart: () => set({ items: [] }),
 
-  updateQuantity: (productId, quantity) => {
-    if (quantity <= 0) {
-      get().removeItem(productId);
-      return;
-    }
-
-    set((state) => ({
-      items: state.items.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item,
-      ),
-    }));
-  },
-
-  clearCart: () => set({ items: [] }),
-
-  totalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
-
-  totalPrice: () =>
-    get().items.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0,
-    ),
-}),
+      totalItems: () => cartTotals(get().items).totalItems,
+      totalPrice: () => cartTotals(get().items).total,
+    }),
     {
       name: "manoa-cart",
+      version: 2, // v2: produtos passam a carregar `stock`/`active`; carrinhos antigos são descartados
+      migrate: () => ({ items: [] }),
       partialize: (state) => ({ items: state.items }),
       skipHydration: true,
     },

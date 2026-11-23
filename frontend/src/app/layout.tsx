@@ -3,7 +3,7 @@ import "./globals.css";
 import NavBar from "@/components/navbar/navbar";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { Toaster } from "@/components/ui/toaster";
-import { CartHydrator } from "@/components/cart/cart-hydrator";
+import { CartHydrator } from "@/app/cart/_components/cart-hydrator";
 
 export const metadata: Metadata = {
   title: "Manoa",

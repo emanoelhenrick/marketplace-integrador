@@ -91,7 +91,7 @@ export function ArtisanDashboard({ data }: ArtisanDashboardProps) {
             <CardTitle>Seu acervo</CardTitle>
             <CardDescription>{myProducts.length} peça(s) cadastrada(s)</CardDescription>
           </div>
-          <Button render={<Link href="/produtos/novo" />} variant="outline" size="sm">
+          <Button render={<Link href="/products/novo" />} variant="outline" size="sm">
             Novo produto
           </Button>
         </CardHeader>
@@ -101,7 +101,7 @@ export function ArtisanDashboard({ data }: ArtisanDashboardProps) {
               {myProducts.slice(0, 8).map((product) => (
                 <Link
                   key={product.id}
-                  href={`/produtos/${product.id}`}
+                  href={`/products/${product.id}`}
                   className="group rounded-lg border overflow-hidden hover:shadow-md transition-shadow"
                 >
                   <div className="aspect-square overflow-hidden bg-muted relative">

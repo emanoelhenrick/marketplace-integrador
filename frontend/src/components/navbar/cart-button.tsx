@@ -24,7 +24,7 @@ export function CartButton({ variant = "full", onNavigate }: CartButtonProps) {
   if (variant === "icon") {
     return (
       <Link
-        href="/carrinho"
+        href="/cart"
         aria-label={`Carrinho${totalItems ? `, ${totalItems} item(ns)` : ""}`}
         onClick={onNavigate}
         className="relative p-2 rounded-full hover:bg-muted transition-colors"
@@ -41,7 +41,7 @@ export function CartButton({ variant = "full", onNavigate }: CartButtonProps) {
 
   return (
     <Link
-      href="/carrinho"
+      href="/cart"
       onClick={onNavigate}
       className={cn(
         buttonVariants(),

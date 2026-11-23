@@ -4,6 +4,7 @@ import { CheckCircle2, Package } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatBRL } from "@/lib/format";
+import { fromCents, lineTotalCents } from "@/lib/money";
 import type { OrderItem } from "@/types/order";
 import type { Product } from "@/types/product";
 
@@ -13,9 +14,10 @@ interface OrderItemsCardProps {
   totalLabel: string;
   total: number;
   description?: string;
+  canReview?: boolean;
 }
 
-export function OrderItemsCard({ items, productById, totalLabel, total, description }: OrderItemsCardProps) {
+export function OrderItemsCard({ items, productById, totalLabel, total, description, canReview }: OrderItemsCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -39,7 +41,7 @@ export function OrderItemsCard({ items, productById, totalLabel, total, descript
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold line-clamp-1">
                   {product ? (
-                    <Link href={`/produtos/${item.productId}`} className="hover:underline">
+                    <Link href={`/products/${item.productId}`} className="hover:underline">
                       {product.name}
                     </Link>
                   ) : (
@@ -49,6 +51,11 @@ export function OrderItemsCard({ items, productById, totalLabel, total, descript
                 <p className="text-xs text-muted-foreground">
                   Qtd. {item.quantity} · {formatBRL(item.unitPrice)} / un.
                 </p>
+                {canReview && (
+                  <Link href={`/products/${item.productId}#avaliacoes`} className="text-xs text-brand font-semibold hover:underline">
+                    Avaliar esta peça
+                  </Link>
+                )}
                 {item.packed && (
                   <p className="text-xs text-forest font-medium flex items-center gap-1 mt-0.5">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Embalado
@@ -56,7 +63,7 @@ export function OrderItemsCard({ items, productById, totalLabel, total, descript
                 )}
               </div>
               <span className="text-sm font-bold shrink-0">
-                {formatBRL(item.unitPrice * item.quantity)}
+                {formatBRL(fromCents(lineTotalCents(item.unitPrice, item.quantity)))}
               </span>
             </div>
           );

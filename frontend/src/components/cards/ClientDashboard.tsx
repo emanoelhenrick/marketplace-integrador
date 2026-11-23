@@ -42,7 +42,7 @@ export function ClientDashboard({ data }: ClientDashboardProps) {
         <CardContent>
           {myOrders.length === 0 ? (
             <EmptyBlock icon={ShoppingBag} message="Você ainda não fez nenhum pedido.">
-              <Button render={<Link href="/produtos" />} className="py-4 px-6">
+              <Button render={<Link href="/products" />} className="py-4 px-6">
                 Ver produtos
               </Button>
             </EmptyBlock>
