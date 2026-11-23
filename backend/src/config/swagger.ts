@@ -7,7 +7,7 @@ export const swaggerSpec = swaggerJsdoc({
       title: "Manoa Marketplace API",
       version: "1.0.0",
       description:
-        "API do marketplace de artesanato pernambucano, incluindo vitrine, catálogo, carrinho, pedidos e avaliações.",
+        "API for the Pernambuco artisan marketplace, including storefront, catalog, cart, orders, and reviews.",
     },
     servers: [
       {
@@ -110,7 +110,6 @@ export const swaggerSpec = swaggerJsdoc({
             category: { type: "string" },
             technique: { type: "string", nullable: true },
             location: { type: "string" },
-            municipality: { type: "string" },
             image: { type: "string", nullable: true },
             description: { type: "string", nullable: true },
             quantity: { type: "integer" },
@@ -120,12 +119,12 @@ export const swaggerSpec = swaggerJsdoc({
         },
         CreateProductRequest: {
           type: "object",
-          required: ["name", "category", "technique", "municipality", "price", "quantity"],
+          required: ["name", "category", "technique", "location", "price", "quantity"],
           properties: {
             name: { type: "string" },
             category: { type: "string" },
             technique: { type: "string" },
-            municipality: { type: "string" },
+            location: { type: "string" },
             price: { type: "number" },
             quantity: { type: "integer", minimum: 0 },
             description: { type: "string" },
@@ -179,7 +178,7 @@ export const swaggerSpec = swaggerJsdoc({
           properties: {
             status: {
               type: "string",
-              enum: ["Pendente", "Em Produção", "Enviado", "pending", "processing", "shipped"],
+              enum: ["pending", "processing", "shipped"],
             },
           },
         },
@@ -289,7 +288,7 @@ export const swaggerSpec = swaggerJsdoc({
           summary: "Listar vitrine",
           parameters: [
             { name: "category", in: "query", schema: { type: "string" } },
-            { name: "municipality", in: "query", schema: { type: "string" } },
+            { name: "location", in: "query", schema: { type: "string" } },
             { name: "technique", in: "query", schema: { type: "string" } },
           ],
           responses: { 200: { description: "Lista de produtos", content: { "application/json": { schema: { type: "array", items: { $ref: "#/components/schemas/Product" } } } } } },

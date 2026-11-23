@@ -129,7 +129,6 @@ export class ProductService {
     return products.map((product) => ({
       id: product.id,
       name: product.name,
-      title: product.name,
       price: product.price,
       stars: product.stars,
       category: product.category,
@@ -137,7 +136,6 @@ export class ProductService {
       artisan: product.artisan,
       artisanId: product.artisanId,
       location: product.location,
-      municipality: product.location,
       image: product.image,
       description: product.description,
       quantity: product.quantity,
@@ -173,7 +171,6 @@ export class ProductService {
     return {
       id: product.id,
       name: product.name,
-      title: product.name,
       price: product.price,
       stars: product.stars,
       category: product.category,
@@ -181,7 +178,6 @@ export class ProductService {
       artisan: product.artisan,
       artisanId: product.artisanId,
       location: product.location,
-      municipality: product.location,
       image: product.image,
       description: product.description,
       quantity: product.quantity,

@@ -24,7 +24,7 @@ export class PurchaseService {
       throw new ForbiddenError("Usuário sem permissão para finalizar compras.");
     }
 
-    const providedItems = data?.items ?? data?.itens ?? [];
+    const providedItems = data?.items ?? [];
     let items = providedItems;
     let sourcedFromCart = false;
 
@@ -46,8 +46,8 @@ export class PurchaseService {
     }
 
     const parsedItems = items.map((item) => {
-      const productId = Number(item.produtoId ?? item.productId);
-      const quantity = Number(item.quantidade ?? item.quantity);
+      const productId = Number(item.productId);
+      const quantity = Number(item.quantity);
 
       if (!Number.isInteger(productId) || productId <= 0) {
         throw new NotFoundError("Produto não encontrado.");
@@ -188,11 +188,10 @@ export class PurchaseService {
         buyerId: buyer.id,
         totalAmount,
         status: "paid",
-        statusLabel: "Aprovado (Simulado)",
         items: itemsToPersist.map(({ product, quantity }) => ({
-          produtoId: product.id,
-          quantidade: quantity,
-          valorUnitario: Number(product.price),
+          productId: product.id,
+          quantity,
+          unitPrice: Number(product.price),
         })),
       };
     });

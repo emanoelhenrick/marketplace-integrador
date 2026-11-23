@@ -36,7 +36,7 @@ export class ProductRepository {
   }
 
   async findActive(
-    filters: { category?: string; municipality?: string; technique?: string },
+    filters: { category?: string; location?: string; technique?: string },
     client = prisma
   ): Promise<ProductEntity[]> {
     const where: Prisma.ProductWhereInput = {
@@ -54,9 +54,9 @@ export class ProductRepository {
       };
     }
 
-    if (filters.municipality) {
+    if (filters.location) {
       where.location = {
-        contains: filters.municipality,
+        contains: filters.location,
         mode: "insensitive",
       };
     }

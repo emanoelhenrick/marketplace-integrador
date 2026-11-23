@@ -25,8 +25,8 @@ export class CartService {
   ) {
     this.ensureClient(buyer.role);
 
-    const productId = Number(data.productId ?? data.produtoId);
-    const quantity = this.parseQuantity(data.quantity ?? data.quantidade);
+    const productId = Number(data.productId);
+    const quantity = this.parseQuantity(data.quantity);
 
     if (!Number.isInteger(productId) || productId <= 0) {
       throw new NotFoundError("Produto não encontrado.");
@@ -78,7 +78,7 @@ export class CartService {
   ) {
     this.ensureClient(buyer.role);
     const productId = Number(productIdValue);
-    const quantity = this.parseQuantity(data.quantity ?? data.quantidade);
+    const quantity = this.parseQuantity(data.quantity);
 
     if (!Number.isInteger(productId) || productId <= 0) {
       throw new NotFoundError("Produto não encontrado.");

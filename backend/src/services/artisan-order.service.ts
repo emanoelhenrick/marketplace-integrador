@@ -73,25 +73,13 @@ export class ArtisanOrderService {
   }
 
   private validateStatus(status: UpdateArtisanOrderStatusDto["status"]) {
-    const normalizedStatus: Record<
-      NonNullable<UpdateArtisanOrderStatusDto["status"]>,
-      "pending" | "processing" | "shipped"
-    > = {
-      pending: "pending",
-      Pendente: "pending",
-      processing: "processing",
-      "Em Produção": "processing",
-      shipped: "shipped",
-      Enviado: "shipped",
-    };
-
-    if (!status || !normalizedStatus[status]) {
+    if (status !== "pending" && status !== "processing" && status !== "shipped") {
       throw new BusinessError(
-        'Status inválido. Use "Pendente", "Em Produção" ou "Enviado".'
+        'Invalid status. Use "pending", "processing" or "shipped".'
       );
     }
 
-    return normalizedStatus[status];
+    return status;
   }
 
   private toResponse(order: OrderWithArtisanItems) {

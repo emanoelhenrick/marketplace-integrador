@@ -1,11 +1,9 @@
 export interface CreateProductDto {
   name?: string | null;
-  title?: string | null;
   category?: string | null;
   technique?: string | null;
   price?: number | string | null;
   location?: string | null;
-  municipality?: string | null;
   description?: string | null;
   image?: string | null;
   quantity?: number | string | null;
@@ -30,6 +28,6 @@ export interface StatusUpdateDto {
 
 export interface ProductFiltersDto {
   category?: string;
-  municipality?: string;
+  location?: string;
   technique?: string;
 }

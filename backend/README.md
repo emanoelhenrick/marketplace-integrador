@@ -1,121 +1,276 @@
-# Meu Projeto
+# Manoa Marketplace - Backend
 
-API REST com Node.js, TypeScript, Express e Prisma.
+API REST do marketplace de artesanato pernambucano, desenvolvida com Node.js,
+TypeScript, Express, Prisma e PostgreSQL.
 
-## Estrutura
+## Tecnologias
 
+- Node.js
+- TypeScript
+- Express
+- Prisma ORM
+- PostgreSQL
+- JSON Web Token
+- Multer
+- Swagger UI e OpenAPI
+
+## Requisitos
+
+- Node.js 20 ou superior
+- PostgreSQL
+- npm
+
+## Instalação
+
+```bash
+cd backend
+npm install
+cp .env.example .env
 ```
-meu-projeto/
-├── prisma/
-│   └── schema.prisma     # Modelos do banco de dados
-├── src/
-│   ├── routes/
-│   │   └── user.routes.ts
-│   ├── app.ts             # Configuração do Express
-│   ├── prisma.ts          # Cliente Prisma
-│   └── server.ts          # Ponto de entrada
-├── .env.example
-├── package.json
-└── tsconfig.json
+
+Configure `.env`:
+
+```env
+PORT=3000
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/marketplace_integrador?schema=public"
+JWT_SECRET="replace-with-a-long-random-secret"
 ```
 
-## Como rodar
+O `JWT_SECRET` é obrigatório.
 
-1. Instale as dependências:
-   ```bash
-   npm install
-   ```
+## Banco de dados
 
-2. Copie o arquivo de variáveis de ambiente e configure sua URL do banco:
-   ```bash
-   cp .env.example .env
-   ```
+Gerar o Prisma Client:
 
-3. Rode a primeira migration (cria as tabelas no banco):
-   ```bash
-   npx prisma migrate dev --name init
-   ```
+```bash
+npm run prisma:generate
+```
 
-4. Inicie o servidor em modo desenvolvimento:
-   ```bash
-   npm run dev
-   ```
+Aplicar as migrations:
 
-O servidor sobe em `http://localhost:3000`.
+```bash
+npx prisma migrate deploy
+npx prisma migrate status
+```
 
-## Rotas de exemplo (`/users`)
+Popular dados de demonstração:
 
-| Método | Rota         | Descrição              |
-|--------|--------------|-------------------------|
-| GET    | /users       | Lista todos os usuários |
-| GET    | /users/:id   | Busca um usuário por id |
-| POST   | /users       | Cria um usuário         |
-| PUT    | /users/:id   | Atualiza um usuário     |
-| DELETE | /users/:id   | Remove um usuário       |
+```bash
+npm run db:seed
+```
 
-## Rotas de pedidos (`/orders`)
+Abrir o Prisma Studio:
 
-| Método | Rota        | Descrição                         |
-|--------|-------------|-----------------------------------|
-| GET    | /orders     | Lista os pedidos do usuário       |
-| GET    | /orders/:id | Busca um pedido do usuário por id |
+```bash
+npm run prisma:studio
+```
 
-## Rotas de pedidos do artesão (`/artisan/orders`)
+## Executar
 
-| Método | Rota                | Descrição                             |
-|--------|---------------------|---------------------------------------|
-| GET    | /artisan/orders     | Lista pedidos dos produtos do artesão |
-| GET    | /artisan/orders/:id | Busca um pedido do artesão por id     |
+Desenvolvimento:
 
-## Rotas de produtos (`/products`)
+```bash
+npm run dev
+```
 
-| Método | Rota      | Descrição              |
-|--------|-----------|------------------------|
-| POST   | /products | Cadastra um produto    |
+Build e execução em produção:
 
-## Rota de catálogo (`GET /products?category=`)
+```bash
+npm run build
+npm start
+```
 
-| Método | Rota                         | Descrição                                      |
-|--------|------------------------------|------------------------------------------------|
-| GET    | /products                    | Lista produtos ativos                           |
-| GET    | /products?category=<texto>   | Filtra produtos ativos por categoria            |
-| GET    | /products/:id                | Busca um produto ativo por id                   |
+API:
 
-Os filtros de técnica e região ainda não estão implementados.
+- Servidor: `http://localhost:3000`
+- Swagger UI: `http://localhost:3000/docs`
+- OpenAPI JSON: `http://localhost:3000/docs/swagger.json`
+- Health check: `GET http://localhost:3000/`
 
-## Rotas de estoque (`/products/mine`, `/products/:id/stock`)
+## Autenticação
 
-| Método | Rota               | Descrição                         |
-|--------|--------------------|-----------------------------------|
-| GET    | /products/mine     | Lista o estoque do artesão        |
-| GET    | /products/:id/stock | Consulta o estoque de um produto  |
+Rotas protegidas usam:
 
-O catálogo do artesão em `/products/mine` também retorna `stars`, `location`, `image` e `description`.
+```http
+Authorization: Bearer <token>
+```
 
-As respostas de produto que incluem `quantity` também incluem `available`, calculado como `quantity > 0 && active`. Estoque zero torna o produto indisponível sem alterar `active`.
+Perfis disponíveis:
 
-Quantidade aceita apenas inteiros maiores ou iguais a zero, incluindo `0`, com limite máximo de `2147483647`. Valores negativos, decimais, texto e notação científica são rejeitados.
+- `client`
+- `artisan`
+- `admin`
 
-## Rotas de alteração de produto (`/products/:id`, `/products/:id/status`, `/products/:id/stock`)
+### Autenticação
 
-| Método | Rota                 | Descrição                    |
-|--------|----------------------|------------------------------|
-| PUT    | /products/:id        | Edita um produto             |
-| PATCH  | /products/:id/status | Atualiza o status do produto |
-| PATCH  | /products/:id/stock  | Atualiza o estoque do produto |
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/auth/register` | Cadastro de comprador ou artesão |
+| POST | `/auth/login` | Login e geração do token JWT |
+| GET | `/auth/me` | Dados do usuário autenticado |
 
-## Scripts
+O cadastro público aceita somente os perfis `client` e `artisan`.
 
-- `npm run dev` — inicia com hot reload
-- `npm run build` — compila TypeScript para `dist/`
-- `npm start` — roda a versão compilada
-- `npm run prisma:generate` — gera o Prisma Client
-- `npm run prisma:migrate` — cria/aplica migrations
-- `npm run prisma:studio` — abre interface visual do banco
+## Produtos
 
-## Próximos passos sugeridos
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| GET | `/products` | Público | Lista produtos ativos |
+| GET | `/products/:id` | Público | Consulta detalhes de um produto |
+| POST | `/products` | Artesão | Cadastra produto |
+| PUT | `/products/:id` | Artesão proprietário | Atualiza produto |
+| PATCH | `/products/:id/status` | Artesão proprietário | Ativa ou desativa produto |
+| GET | `/products/mine` | Artesão | Lista produtos do artesão |
+| GET | `/products/:id/stock` | Artesão proprietário | Consulta estoque |
+| PATCH | `/products/:id/stock` | Artesão proprietário | Atualiza estoque |
 
-- Adicionar validação de dados (ex: Zod)
-- Adicionar autenticação (ex: JWT)
-- Separar lógica em controllers/services
-- Adicionar testes (ex: Jest ou Vitest)
+Filtros públicos suportados em `GET /products`:
+
+- `category`
+- `location`
+- `technique`
+
+Exemplo:
+
+```http
+GET /products?category=Cerâmica&location=Caruaru&technique=Barro
+```
+
+O cadastro suporta JSON com URL de imagem ou `multipart/form-data`
+no campo `image`. A imagem deve ser PNG ou JPEG e ter no máximo 5 MB.
+
+## Artesãos
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/artisans` | Lista artesãos ativos |
+| GET | `/artisans/:id` | Consulta perfil público |
+| GET | `/artisans/:id/products?page=1&limit=12` | Lista produtos ativos do artesão |
+| GET | `/users/:id/profile?page=1&limit=12` | Perfil público e catálogo paginado |
+| PATCH | `/users/me/profile` | Atualiza o perfil do artesão autenticado |
+
+Filtros disponíveis em `GET /artisans`:
+
+- `craft`
+- `location`
+- `region`
+
+## Carrinho
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/cart` | Consulta carrinho do comprador |
+| POST | `/cart/items` | Adiciona item |
+| PUT | `/cart/items/:productId` | Atualiza quantidade |
+| DELETE | `/cart/items/:productId` | Remove item |
+| DELETE | `/cart` | Limpa carrinho |
+
+O cadastro do item usa:
+
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+
+## Compras e pedidos
+
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| POST | `/purchases/finalize` | Comprador | Finaliza compra simulada |
+| GET | `/orders` | Comprador | Lista pedidos do comprador |
+| GET | `/orders/:id` | Comprador | Consulta pedido próprio |
+
+O checkout pode utilizar o carrinho persistido ou receber diretamente:
+
+```json
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    }
+  ]
+}
+```
+
+O pedido recebe um ID público numérico único de seis dígitos.
+
+## Pedidos do artesão
+
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| GET | `/artisan/orders` | Artesão | Lista pedidos relacionados aos produtos |
+| GET | `/artisan/orders/:id` | Artesão proprietário | Consulta pedido relacionado |
+| PATCH | `/artisan/orders/:id/status` | Artesão proprietário | Atualiza status |
+
+Status permitidos:
+
+- `pending`
+- `processing`
+- `shipped`
+
+## Avaliações
+
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| POST | `/reviews` | Comprador | Cria avaliação |
+| GET | `/reviews/product/:productId` | Público | Lista avaliações |
+| POST | `/products/:id/reviews` | Comprador | Avalia produto comprado |
+| GET | `/products/:id/reviews` | Público | Lista avaliações e média |
+
+Regras:
+
+- Nota inteira de 1 a 5.
+- Comentário obrigatório.
+- Compra aprovada obrigatória.
+- Cada usuário só avalia o mesmo produto uma vez.
+- Média recalculada após o registro.
+
+## Administração
+
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| GET | `/users` | Administrador | Lista usuários |
+| PATCH | `/users/:id/status` | Administrador | Ativa ou desativa conta |
+| GET | `/admin/dashboard` | Administrador | Indicadores e vendas |
+
+Exemplo de filtro do dashboard:
+
+```http
+GET /admin/dashboard?startDate=2026-01-01&endDate=2026-12-31
+```
+
+O dashboard retorna vendas simuladas, pedidos realizados, artesãos ativos,
+produtos mais vendidos e pedidos por status.
+
+## Respostas de erro
+
+O backend usa um formato padronizado:
+
+```json
+{
+  "error": "Mensagem do erro"
+}
+```
+
+Códigos principais:
+
+- `400` — dados inválidos ou regra de negócio.
+- `401` — token ausente ou inválido.
+- `403` — usuário sem permissão ou conta desativada.
+- `404` — recurso não encontrado.
+- `500` — erro interno.
+
+## Scripts disponíveis
+
+| Comando | Descrição |
+|---|---|
+| `npm run dev` | Servidor com hot reload |
+| `npm run build` | Compila TypeScript |
+| `npm start` | Executa a aplicação compilada |
+| `npm run db:seed` | Executa seed do banco |
+| `npm run prisma:generate` | Gera Prisma Client |
+| `npm run prisma:migrate` | Executa migrations em desenvolvimento |
+| `npm run prisma:studio` | Abre Prisma Studio |

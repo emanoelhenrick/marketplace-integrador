@@ -34,9 +34,9 @@ export function validateCreateProduct(
   data: CreateProductDto
 ): ValidatedCreateProductData {
   const missingFields: string[] = [];
-  const name = data.name ?? data.title;
+  const name = data.name;
   const technique = data.technique ?? data.category;
-  const municipality = data.municipality ?? data.location;
+  const location = data.location;
   const category = data.category ?? data.technique;
 
   if (isBlank(name)) {
@@ -51,7 +51,7 @@ export function validateCreateProduct(
     missingFields.push("técnica");
   }
 
-  if (isBlank(municipality)) {
+  if (isBlank(location)) {
     missingFields.push("município");
   }
 
@@ -77,7 +77,7 @@ export function validateCreateProduct(
     category: category!.trim(),
     technique: technique!.trim(),
     price,
-    location: municipality?.trim() ?? "",
+    location: location?.trim() ?? "",
     description: data.description?.trim() || null,
     image: data.image?.trim() || null,
     quantity,
@@ -232,7 +232,7 @@ export function validateProductFilters(query: unknown): ProductFiltersDto {
 
   const record = query as Record<string, unknown>;
   const category = record.category ?? record.technique ?? record.techniqueName;
-  const municipality = record.location ?? record.municipality ?? record.municipio;
+  const location = record.location;
   const filters: ProductFiltersDto = {};
 
   if (category !== undefined) {
@@ -250,17 +250,17 @@ export function validateProductFilters(query: unknown): ProductFiltersDto {
     }
   }
 
-  if (municipality !== undefined) {
-    if (typeof municipality !== "string") {
-      throw new BusinessError("Parâmetro de município inválido.");
+  if (location !== undefined) {
+    if (typeof location !== "string") {
+      throw new BusinessError("Invalid location parameter.");
     }
 
-    const normalizedMunicipality = municipality.trim();
-    if (normalizedMunicipality.length > 150) {
-      throw new BusinessError("Parâmetro de município inválido.");
+    const normalizedLocation = location.trim();
+    if (normalizedLocation.length > 150) {
+      throw new BusinessError("Invalid location parameter.");
     }
-    if (normalizedMunicipality) {
-      filters.municipality = normalizedMunicipality;
+    if (normalizedLocation) {
+      filters.location = normalizedLocation;
     }
   }
 
