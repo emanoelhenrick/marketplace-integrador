@@ -1,0 +1,194 @@
+{
+    "strategy":  "content_based_tfidf",
+    "items":  [
+                  {
+                      "id":  312,
+                      "name":  "Xilogravura - O Frevo",
+                      "price":  220,
+                      "stars":  5,
+                      "category":  "Xilogravura \u0026 Cordel",
+                      "technique":  "Xilogravura em umburana",
+                      "artisan":  "Mestre Antônio Xilo",
+                      "artisanId":  "demo-artisan-3",
+                      "location":  "Bezerros / PE",
+                      "image":  "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Impressão original tirada de matriz de umburana entalhada à mão, em papel de alta gramatura.",
+                      "quantity":  18,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.775Z",
+                      "recommendationScore":  51.2366,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.3034,
+                                                    "rating":  1,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  315,
+                      "name":  "Matriz de Xilogravura Original",
+                      "price":  700,
+                      "stars":  4.8,
+                      "category":  "Xilogravura \u0026 Cordel",
+                      "technique":  "Entalhe em madeira",
+                      "artisan":  "Mestre Antônio Xilo",
+                      "artisanId":  "demo-artisan-3",
+                      "location":  "Bezerros / PE",
+                      "image":  "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Matriz em madeira entalhada à mão, peça de colecionador.",
+                      "quantity":  2,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.791Z",
+                      "recommendationScore":  49.2116,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.2859,
+                                                    "rating":  0.96,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  301,
+                      "name":  "Casal de Noivos em Barro",
+                      "price":  180,
+                      "stars":  5,
+                      "category":  "Cerâmica \u0026 Barro",
+                      "technique":  "Modelagem em barro",
+                      "artisan":  "Mestre Zé do Barro",
+                      "artisanId":  "demo-artisan-1",
+                      "location":  "Alto do Moura / Caruaru",
+                      "image":  "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Figura de um casal de noivos modelada à mão em argila e queimada a lenha, com pintura em engobe.",
+                      "quantity":  12,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.707Z",
+                      "recommendationScore":  48.6911,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.267,
+                                                    "rating":  1,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  302,
+                      "name":  "Cena de Feira em Barro",
+                      "price":  260,
+                      "stars":  5,
+                      "category":  "Cerâmica \u0026 Barro",
+                      "technique":  "Modelagem em barro",
+                      "artisan":  "Mestre Zé do Barro",
+                      "artisanId":  "demo-artisan-1",
+                      "location":  "Alto do Moura / Caruaru",
+                      "image":  "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Pequeno diorama com feirantes e bancas, retratando o cotidiano do agreste pernambucano.",
+                      "quantity":  8,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.716Z",
+                      "recommendationScore":  47.6073,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.2515,
+                                                    "rating":  1,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  304,
+                      "name":  "Sanfoneiro de Barro",
+                      "price":  140,
+                      "stars":  4.7,
+                      "category":  "Cerâmica \u0026 Barro",
+                      "technique":  "Modelagem em barro",
+                      "artisan":  "Mestre Zé do Barro",
+                      "artisanId":  "demo-artisan-1",
+                      "location":  "Alto do Moura / Caruaru",
+                      "image":  "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Figura de sanfoneiro em tamanho médio, símbolo do forró e das festas juninas.",
+                      "quantity":  15,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.729Z",
+                      "recommendationScore":  45.4575,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.238,
+                                                    "rating":  0.94,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  313,
+                      "name":  "Xilogravura - Cangaceiros",
+                      "price":  240,
+                      "stars":  4.7,
+                      "category":  "Xilogravura \u0026 Cordel",
+                      "technique":  "Xilogravura em umburana",
+                      "artisan":  "Mestre Antônio Xilo",
+                      "artisanId":  "demo-artisan-3",
+                      "location":  "Bezerros / PE",
+                      "image":  "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Gravura em preto e branco inspirada nas histórias do cangaço, numerada e assinada.",
+                      "quantity":  14,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.780Z",
+                      "recommendationScore":  44.6075,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.2258,
+                                                    "rating":  0.94,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  320,
+                      "name":  "Boneco de Olinda em Madeira",
+                      "price":  190,
+                      "stars":  4.5,
+                      "category":  "Madeira \u0026 Entalhe",
+                      "technique":  "Entalhe e pintura",
+                      "artisan":  "Mestre Chico Carranqueiro",
+                      "artisanId":  "demo-artisan-4",
+                      "location":  "Petrolina / PE",
+                      "image":  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Boneco articulado em madeira leve, pintado à mão nas cores do carnaval pernambucano.",
+                      "quantity":  16,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.816Z",
+                      "recommendationScore":  42.6234,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.2089,
+                                                    "rating":  0.9,
+                                                    "available":  true
+                                                }
+                  },
+                  {
+                      "id":  309,
+                      "name":  "Jogo de Guardanapos Rendados",
+                      "price":  150,
+                      "stars":  4.6,
+                      "category":  "Rendas \u0026 Têxtil",
+                      "technique":  "Renda renascença",
+                      "artisan":  "Dona Rita Rendeira",
+                      "artisanId":  "demo-artisan-2",
+                      "location":  "Poção / PE",
+                      "image":  "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "description":  "Conjunto com seis guardanapos de algodão com barra em renda renascença.",
+                      "quantity":  20,
+                      "active":  true,
+                      "createdAt":  "2026-11-24T19:02:01.637Z",
+                      "updatedAt":  "2026-11-24T19:04:59.758Z",
+                      "recommendationScore":  41.1184,
+                      "recommendationDetails":  {
+                                                    "contentSimilarity":  0.1817,
+                                                    "rating":  0.92,
+                                                    "available":  true
+                                                }
+                  }
+              ],
+    "metadata":  {
+                     "processed":  21,
+                     "workers":  4,
+                     "elapsedMs":  21.796
+                 }
+}

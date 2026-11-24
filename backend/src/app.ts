@@ -12,6 +12,7 @@ import dashboardRoutes from "./routes/dashboard.routes";
 import docsRoutes from "./routes/docs.routes";
 import artisanRoutes from "./routes/artisan.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
+import recommendationRoutes from "./routes/recommendation.routes";
 
 const app: Application = express();
 
@@ -27,6 +28,7 @@ app.use("/users", userRoutes);
 app.use("/purchases", purchaseRoutes);
 app.use("/orders", orderRoutes);
 app.use("/products", productRoutes);
+app.use("/recommendations", recommendationRoutes);
 app.use("/artisan/orders", artisanOrderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/cart", cartRoutes);

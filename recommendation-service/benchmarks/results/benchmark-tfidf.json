@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-11-24T20:12:04.603Z",
+  "environment": {
+    "platform": "win32",
+    "architecture": "x64",
+    "processors": 8,
+    "workers": 4,
+    "nodeVersion": "v22.16.0"
+  },
+  "algorithm": "content_based_tfidf",
+  "repetitions": 5,
+  "results": [
+    {
+      "datasetSize": 500,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 64.576,
+        "meanMs": 65.916,
+        "throughputProductsPerSecond": 7742.79,
+        "repetitions": 5
+      },
+      "parallel": {
+        "medianMs": 36.438,
+        "meanMs": 39.587,
+        "throughputProductsPerSecond": 13721.9,
+        "repetitions": 5
+      },
+      "speedup": 1.772,
+      "improvementPercent": 43.57,
+      "fasterStrategy": "parallel",
+      "equivalentResults": true
+    },
+    {
+      "datasetSize": 1000,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 274.687,
+        "meanMs": 273.348,
+        "throughputProductsPerSecond": 3640.5,
+        "repetitions": 5
+      },
+      "parallel": {
+        "medianMs": 139.434,
+        "meanMs": 139.105,
+        "throughputProductsPerSecond": 7171.85,
+        "repetitions": 5
+      },
+      "speedup": 1.97,
+      "improvementPercent": 49.24,
+      "fasterStrategy": "parallel",
+      "equivalentResults": true
+    },
+    {
+      "datasetSize": 2000,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 999.444,
+        "meanMs": 1011.628,
+        "throughputProductsPerSecond": 2001.11,
+        "repetitions": 5
+      },
+      "parallel": {
+        "medianMs": 454.792,
+        "meanMs": 462.137,
+        "throughputProductsPerSecond": 4397.62,
+        "repetitions": 5
+      },
+      "speedup": 2.198,
+      "improvementPercent": 54.5,
+      "fasterStrategy": "parallel",
+      "equivalentResults": true
+    },
+    {
+      "datasetSize": 5000,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 6186.984,
+        "meanMs": 6227.77,
+        "throughputProductsPerSecond": 808.15,
+        "repetitions": 5
+      },
+      "parallel": {
+        "medianMs": 3144.125,
+        "meanMs": 3223.261,
+        "throughputProductsPerSecond": 1590.27,
+        "repetitions": 5
+      },
+      "speedup": 1.968,
+      "improvementPercent": 49.18,
+      "fasterStrategy": "parallel",
+      "equivalentResults": true
+    }
+  ]
+}

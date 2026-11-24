@@ -1,0 +1,62 @@
+{
+  "benchmark": "Manoa Recommendation Service - Persistent Worker Pool",
+  "date": "2026-11-24T19:23:08.595Z",
+  "nodeVersion": "v22.16.0",
+  "platform": "win32 x64",
+  "availableCpus": 8,
+  "repetitions": 5,
+  "workerCount": 4,
+  "results": [
+    {
+      "products": 1000,
+      "repetitions": 5,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 1.061,
+        "throughputPerSecond": 942774
+      },
+      "parallel": {
+        "medianMs": 2.181,
+        "throughputPerSecond": 458526
+      },
+      "speedup": 0.486,
+      "improvementPercent": -105.61,
+      "fasterStrategy": "sequential",
+      "equivalentResults": true
+    },
+    {
+      "products": 10000,
+      "repetitions": 5,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 3.222,
+        "throughputPerSecond": 3103566
+      },
+      "parallel": {
+        "medianMs": 13.654,
+        "throughputPerSecond": 732375
+      },
+      "speedup": 0.236,
+      "improvementPercent": -323.77,
+      "fasterStrategy": "sequential",
+      "equivalentResults": true
+    },
+    {
+      "products": 50000,
+      "repetitions": 5,
+      "workers": 4,
+      "sequential": {
+        "medianMs": 19.938,
+        "throughputPerSecond": 2507799
+      },
+      "parallel": {
+        "medianMs": 74.229,
+        "throughputPerSecond": 673588
+      },
+      "speedup": 0.269,
+      "improvementPercent": -272.3,
+      "fasterStrategy": "sequential",
+      "equivalentResults": true
+    }
+  ]
+}

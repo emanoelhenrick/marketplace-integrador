@@ -1,0 +1,10 @@
+
+{
+  "name": "manoa-recommendation-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serviço independente de recomendação de produtos do Manoa",
+  "scripts": {
+    "start": "node src/server.cjs"
+  }
+}
